@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { getFood } from './infras/get';
-import { listFood } from './infras/list';
-import { createFood } from './infras/create';
-import { updateFood } from './infras/update';
-import { deleteFood } from './infras/delete';
+import { getFood } from './infras/transport/get';
+import { listFood } from './infras/transport/list';
+import { createFood } from './infras/transport/create';
+import { updateFood } from './infras/transport/update';
+import { deleteFood } from './infras/transport/delete';
 
 export const setupFoodModule = () => {
   const router = Router();

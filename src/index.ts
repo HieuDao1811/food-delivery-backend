@@ -1,31 +1,27 @@
 import express, { Request, Response } from 'express';
 import { config } from 'dotenv';
 import { z } from 'zod';
+import { setupFoodModule } from './modules/food';
+import { sequelize } from './shared/component/sequelize';
+
 config();
 
-const app = express();
-const port = process.env.PORT || 3000;
 
-const CategorySchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(3, 'name at least 3 characters'),
-  image: z.string().optional()
-})
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
 
-type Category = z.infer<typeof CategorySchema>;
+    const app = express();
+    const port = process.env.PORT || 3000;
 
-app.post('v1/categories', (req: Request, res: Response) => {
-  const { success, data, error } = CategorySchema.safeParse(req.body);
+    app.use('/v1', setupFoodModule());
 
-  if(!success) {
-    res.status(400).json({
-      message: 'Name is required',
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
     })
-
-    return;
+  } catch (error) {
+    console.error('Unable to connect to the database: ', error);
+    process.exit(1);
   }
-})
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-})
+})();

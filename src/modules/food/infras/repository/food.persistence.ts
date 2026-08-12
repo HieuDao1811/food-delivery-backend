@@ -2,6 +2,7 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 export class FoodPersistence extends Model {
   declare id: string
+  declare isAvailable: boolean
 }
 
 export const modelName = "Food";
@@ -36,13 +37,14 @@ export function init(sequelize: Sequelize) {
       allowNull: false,
       defaultValue: 1
     }
-  },
-  {
-    sequelize,
-    modelName: modelName,
-    timestamps: true,
-    createdAt: "created_at",
-    updatedAt: "updated_at"
-  }
-)
+    },
+    {
+      sequelize,
+      modelName: modelName,
+      timestamps: true,
+      tableName: "foods",
+      createdAt: "created_at",
+      updatedAt: "updated_at"
+    }
+  )
 }

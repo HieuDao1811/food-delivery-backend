@@ -1,16 +1,11 @@
 import { z } from 'zod';
 
-export enum FoodStatus  {
-  AVAILABLE = 1,
-  UNAVAILABLE = 0
-}
-
 export const FoodSchema = z.object({
   name: z.string(),
   description: z.string(),
   price: z.number().positive(),
   imageUrl: z.string(),
-  isAvailable: z.enum(FoodStatus),
+  isAvailable: z.number().int().min(0).max(1),
   created_at: z.date(),
   updated_at: z.date()
 });

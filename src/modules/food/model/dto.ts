@@ -4,7 +4,7 @@ export const CreateFoodSchema = z.object({
   name: z.string().min(1),
   description: z.string(),
   price: z.coerce.number().positive(),
-  imageUrl: z.string().optional()
+  imageUrl: z.string()
 });
 export type CreateFood = z.infer<typeof CreateFoodSchema>;
 
@@ -17,8 +17,9 @@ export const UpdateFoodSchema = z.object({
 });
 export type UpdateFood = z.infer<typeof UpdateFoodSchema>;
 
-export const PagingSchema = z.object({
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(10)
+export const FoodCondDTOSchema = z.object({
+  name: z.string().optional(),
+  isAvailable: z.number().int().min(0).max(1)
 });
-export type PagingDTO = z.infer<typeof PagingSchema>;
+
+export type FoodCondDTO = z.infer<typeof FoodCondDTOSchema>;

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { FoodPersistence } from '../repository/food.persistence';
-import { PagingSchema } from '../../model/dto';
+import { PagingSchema } from '../../../../shared/model/paging';
 
 export const listFood = async (req: Request, res: Response): Promise<void> => {
   const { success, data, error } = PagingSchema.safeParse(req.query);

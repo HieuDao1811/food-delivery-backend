@@ -28,8 +28,10 @@ export class FoodUseCase implements IFoodUseCase {
     return this.repository.update(id, data);
   }
 
-  deleteFood(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async deleteFood(id: string): Promise<boolean> {
+    const food = await this.repository.get(id);
+    if (!food || food.isAvailable === 0) throw ErrDataNotFound;
+    return this.repository.delete(id);
   }
 
   async listFoods(cond: FoodCondDTO, paging: PagingDTO): Promise<Array<Food>> {
@@ -44,9 +46,9 @@ export class FoodUseCase implements IFoodUseCase {
     const food: Food = {
       id: newId,
       name: data.name,
-      description: data.description,
+      description: data.description ?? null,
       price: data.price,
-      imageUrl: data.imageUrl,
+      imageUrl: data.imageUrl ?? null,
       isAvailable: 1,
       createdAt: new Date(),
       updatedAt: new Date()

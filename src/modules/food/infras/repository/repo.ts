@@ -1,8 +1,8 @@
-import { Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { PagingDTO } from "../../../../shared/model/paging";
 import { IRepository } from "../../interface";
-import { CreateFood, FoodCondDTO, UpdateFood } from "../../model/dto";
-import { Food } from "../../model/model";
+import { FoodCondDTO, UpdateFood } from "../../model/dto";
+import { Food, FoodSchema } from "../../model/model";
 
 // implement ORM here (Sequelize)
 
@@ -10,20 +10,40 @@ export class MySQLFoodRepository implements IRepository {
   constructor(private readonly sequelize: Sequelize, private readonly modelName: string) {}
 
   async get(id: string): Promise<Food | null> {
-    return await this.sequelize.models[this.modelName].findByPk(id);
+    const data = await this.sequelize.models[this.modelName].findByPk(id);
+
+    if (!data) {
+      return null;
+    }
+
+    return FoodSchema.parse(data.get({ plain: true }));
   }
-  list(cond: FoodCondDTO, paging: PagingDTO): Promise<Array<Food>> {
-    throw new Error("Method not implemented.");
+  async list(cond: FoodCondDTO, paging: PagingDTO): Promise<Array<Food>> {
+    const where: Record<string, unknown> = { isAvailable: cond.isAvailable };
+    if (cond.name) where.name = { [Op.like]: `%${cond.name}%` };
+
+    const rows = await this.sequelize.models[this.modelName].findAll({
+      where,
+      limit: paging.limit,
+      offset: (paging.page - 1) * paging.limit,
+      order: [["createdAt", "DESC"]]
+    });
+    return rows.map((row) => FoodSchema.parse(row.get({ plain: true })));
   }
-  async insert(data: CreateFood): Promise<boolean> {
+  async insert(data: Food): Promise<boolean> {
     await this.sequelize.models[this.modelName].create(data);
     return true;
   }
-  update(id: string, data: UpdateFood): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async update(id: string, data: UpdateFood): Promise<boolean> {
+    const [affected] = await this.sequelize.models[this.modelName].update(data, { where: { id } });
+    return affected > 0;
   }
-  delete(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async delete(id: string): Promise<boolean> {
+    const [affected] = await this.sequelize.models[this.modelName].update(
+      { isAvailable: 0 },
+      { where: { id, isAvailable: 1 } }
+    );
+    return affected > 0;
   }
 
 }

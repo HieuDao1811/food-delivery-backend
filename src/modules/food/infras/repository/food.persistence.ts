@@ -2,7 +2,9 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 export class FoodPersistence extends Model {
   declare id: string
-  declare isAvailable: boolean
+  declare isAvailable: number
+  declare createdAt: Date
+  declare updatedAt: Date
 }
 
 export const modelName = "Food";
@@ -36,15 +38,24 @@ export function init(sequelize: Sequelize) {
       field: "is_available",
       allowNull: false,
       defaultValue: 1
-    }
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        field: "created_at"
+      },
+
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: "updated_at"
+      }
     },
     {
       sequelize,
       modelName: modelName,
       timestamps: true,
       tableName: "foods",
-      createdAt: "created_at",
-      updatedAt: "updated_at"
+      createdAt: "createdAt",
+      updatedAt: "updatedAt"
     }
   )
 }

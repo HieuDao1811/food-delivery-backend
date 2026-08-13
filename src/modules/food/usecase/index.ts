@@ -46,9 +46,9 @@ export class FoodUseCase implements IFoodUseCase {
     const food: Food = {
       id: newId,
       name: data.name,
-      description: data.description ?? null,
+      description: data.description,
       price: data.price,
-      imageUrl: data.imageUrl ?? null,
+      imageUrl: data.imageUrl,
       isAvailable: 1,
       createdAt: new Date(),
       updatedAt: new Date()

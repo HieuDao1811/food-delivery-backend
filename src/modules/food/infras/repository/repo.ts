@@ -26,7 +26,7 @@ export class MySQLFoodRepository implements IRepository {
       where,
       limit: paging.limit,
       offset: (paging.page - 1) * paging.limit,
-      order: [["createdAt", "DESC"]]
+      order: [[Sequelize.col("created_at"), "DESC"]]
     });
     return rows.map((row) => FoodSchema.parse(row.get({ plain: true })));
   }

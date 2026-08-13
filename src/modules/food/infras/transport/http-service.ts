@@ -69,7 +69,7 @@ export class FoodHttpService {
   }
 
   private handleError(error: unknown, res: Response) {
-    if (error === ErrDataNotFound) {
+    if (error === ErrDataNotFound || (error instanceof Error && error.message === ErrDataNotFound.message)) {
       res.status(404).json({ message: "Food not found" });
       return;
     }

@@ -1,0 +1,1 @@
+export const ErrFoodNameDuplicate = new Error("Food is already exist");

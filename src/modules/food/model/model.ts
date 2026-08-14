@@ -6,7 +6,7 @@ export const FoodSchema = z.object({
   description: z.string().nullable().optional(),
   price: z.coerce.number().positive(),
   imageUrl: z.string().nullable().optional(),
-  isAvailable: z.coerce.number().int().min(0).max(1),
+  isAvailable: z.coerce.number().int().min(0).max(1).default(1),
   createdAt: z.date(),
   updatedAt: z.date()
 });

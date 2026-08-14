@@ -1,24 +1,30 @@
+import { ICommandHandler } from "../../../shared/interface";
 import { PagingDTO } from "../../../shared/model/paging";
-import { CreateFood, FoodCondDTO, UpdateFood } from "../model/dto";
+import { BaseRepositorySequlize } from "../../../shared/repository/base-repo-sequelize";
+import { CreateFoodDTO, FoodCondDTO, UpdateFoodDTO } from "../model/dto";
 import { Food } from "../model/model";
 
-export interface IFoodUseCase {
-  createANewFood(data: CreateFood): Promise<string>;
-  getDetailFood(id: string): Promise<Food | null>;
-  updateFood(id: string, data: UpdateFood): Promise<boolean>;
-  deleteFood(id: string): Promise<boolean>;
-  listFoods(cond: FoodCondDTO, paging: PagingDTO): Promise<Array<Food>>;
+export interface CreateCommand {
+  cmd: CreateFoodDTO
 }
 
-export interface IRepository extends IQueryRepository, ICommandRepository {}
-
-export interface IQueryRepository {
-  get(id: string): Promise<Food | null>;
-  list(cond: FoodCondDTO, paging: PagingDTO): Promise<Array<Food>>;
+export interface GetDetailQuery {
+  id: string
 }
 
-export interface ICommandRepository {
-  insert(data: Food): Promise<boolean>;
-  update(id: string, data: UpdateFood): Promise<boolean>;
-  delete(id: string): Promise<boolean>;
+export interface ListQuery {
+  cond: FoodCondDTO,
+  paging: PagingDTO
+} 
+
+export interface UpdateCommand {
+  id: string,
+  cmd: UpdateFoodDTO
 }
+
+export interface DeleteCommand {
+  id: string
+}
+
+
+export interface IFoodRepository extends BaseRepositorySequlize<Food, FoodCondDTO, UpdateFoodDTO> {}

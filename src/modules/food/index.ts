@@ -1,43 +1,48 @@
 import { Router } from 'express';
-import { getFood } from './infras/transport/get';
-import { listFood } from './infras/transport/list';
-import { createFood } from './infras/transport/create';
-import { updateFood } from './infras/transport/update';
-import { deleteFood } from './infras/transport/delete';
-import { init, modelName } from './infras/repository/food.persistence';
+
 import { Sequelize } from 'sequelize';
-import { FoodHttpService } from './infras/transport/http-service';
-import { FoodUseCase } from './usecase';
-import { MySQLFoodRepository } from './infras/repository/repo';
+import { FoodRepository } from './infras/repository/sequelize';
+import { FoodHttpService } from './infras/transport';
+import { init } from './infras/repository/sequelize/food.persistence';
+import { CreateNewFoodCmdHandler } from './usecase/create-new-food';
+import { GetFoodDetailCmdHandler } from './usecase/get-food-detail';
+import { UpdateFoodCmdHandler } from './usecase/update-food';
+import { DeleteFoodCmdHandler } from './usecase/delete-food';
+import { ListFoodQueryHandler } from './usecase/list-food';
 
 export const setupFoodModule = (sequelize: Sequelize) => {
   init(sequelize);
 
-  const router = Router();
-
-  router.get('/foods', listFood);
-  router.get('/foods/:id', getFood);
-  router.post('/foods', createFood);
-  router.patch('/foods/:id', updateFood);
-  router.delete('/foods/:id', deleteFood);
-
-  return router;
+  return setupFoodHexagon(sequelize, false);
 };
 
-export const setupFoodHexagon = (sequelize: Sequelize) => {
+export const setupFoodHexagon = (sequelize: Sequelize, initialize = true) => {
   init(sequelize);
 
-  const repository = new MySQLFoodRepository(sequelize, modelName);
-  const useCase = new FoodUseCase(repository);
-  const httpService = new FoodHttpService(useCase);
+  const repository = new FoodRepository(sequelize);
+
+
+  const createCmdHandler = new CreateNewFoodCmdHandler(repository);
+  const getDetailQueryHandler = new GetFoodDetailCmdHandler(repository);
+  const listQueryHandler = new ListFoodQueryHandler(repository);
+  const updateCmdHandler = new UpdateFoodCmdHandler(repository);
+  const deleteCmdHandler = new DeleteFoodCmdHandler(repository);
+
+  const httpService = new FoodHttpService(
+    createCmdHandler, 
+    getDetailQueryHandler, 
+    listQueryHandler,
+    updateCmdHandler,
+    deleteCmdHandler
+  );
 
   const router = Router();
 
-  router.get('/foods', listFood);
-  router.get('/foods/:id', getFood);
-  router.post('/foods', httpService.createANewFoodAPI.bind(httpService));
-  router.patch('/foods/:id', updateFood);
-  router.delete('/foods/:id', deleteFood);
+  router.get('/foods', httpService.listAPI.bind(httpService));
+  router.get('/foods/:id', httpService.getDetailAPI.bind(httpService));
+  router.post('/foods', httpService.createAPI.bind(httpService));
+  router.patch('/foods/:id', httpService.updateAPI.bind(httpService));
+  router.delete('/foods/:id', httpService.deleteAPI.bind(httpService));
 
   return router;
 }

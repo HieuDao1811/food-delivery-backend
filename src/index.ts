@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import { config } from 'dotenv';
-import { z } from 'zod';
 import { setupFoodModule } from './modules/food';
 import { sequelize } from './shared/component/sequelize';
 

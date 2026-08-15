@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import { config } from 'dotenv';
-import { setupFoodModule } from './modules/food';
 import { sequelize } from './shared/component/sequelize';
+import { setupFoodHexagon } from './modules/food';
+import { setupCategoryHexagon } from './modules/category';
 
 config();
 
@@ -16,8 +17,9 @@ config();
     
     app.use(express.json());
 
-    app.use('/v1', setupFoodModule(sequelize));
-
+    app.use('/v1', setupFoodHexagon(sequelize));
+    app.use('/v1', setupCategoryHexagon(sequelize));
+    
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
     })

@@ -10,13 +10,7 @@ import { UpdateFoodCmdHandler } from './usecase/update-food';
 import { DeleteFoodCmdHandler } from './usecase/delete-food';
 import { ListFoodQueryHandler } from './usecase/list-food';
 
-export const setupFoodModule = (sequelize: Sequelize) => {
-  init(sequelize);
-
-  return setupFoodHexagon(sequelize, false);
-};
-
-export const setupFoodHexagon = (sequelize: Sequelize, initialize = true) => {
+export const setupFoodHexagon = (sequelize: Sequelize) => {
   init(sequelize);
 
   const repository = new FoodRepository(sequelize);

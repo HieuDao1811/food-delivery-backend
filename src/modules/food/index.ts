@@ -15,7 +15,6 @@ export const setupFoodHexagon = (sequelize: Sequelize) => {
 
   const repository = new FoodRepository(sequelize);
 
-
   const createCmdHandler = new CreateNewFoodCmdHandler(repository);
   const getDetailQueryHandler = new GetFoodDetailCmdHandler(repository);
   const listQueryHandler = new ListFoodQueryHandler(repository);

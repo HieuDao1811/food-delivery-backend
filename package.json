@@ -21,9 +21,11 @@
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
+    "@types/module-alias": "^2.0.4",
     "@types/node": "^26.2.0",
     "@types/sequelize": "^4.28.20",
     "@types/uuid": "^10.0.0",
-    "tsx": "^4.23.11"
+    "tsx": "^4.23.11",
+    "typescript": "^7.0.2"
   }
 }

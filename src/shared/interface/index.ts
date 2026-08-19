@@ -1,7 +1,5 @@
 import type { PagingDTO } from "../model/paging.js";
 
-
-
 // Repository
 export interface IRepository<Entity, Condition, UpdateDTO> extends IQueryRepository<Entity, Condition>, ICommandRepository<Entity, UpdateDTO> {}
 

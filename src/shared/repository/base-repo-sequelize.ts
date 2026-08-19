@@ -25,13 +25,13 @@ export abstract class BaseRepositorySequlize<Entity, Condition, UpdateDTO> imple
 
   async list(cond: Condition, paging: PagingDTO): Promise<Array<Entity>> {
     const { page, limit } = paging;
-
+    const offset = (page-1) * limit;
     const condSQL = {...cond, isAvailable: 1};
 
     const total = await this.model.count({ where: condSQL });
     paging.total = total;
 
-    const rows = await this.model.findAll({ where: condSQL });
+    const rows = await this.model.findAll({ where: condSQL, limit, offset });
 
     return rows.map(row => row.get({ plain: true }) as Entity);
   }

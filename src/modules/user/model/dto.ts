@@ -41,11 +41,11 @@ export const UpdateUserSchema = z.object({
 
 export type UpdateUserDTO = z.infer<typeof UpdateUserSchema>;
 
-export const UserCondSchema = z.object({
+export const CondUserSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string().email().optional(),
   gender: z.enum(Gender).optional(),
 });
 
-export type UserCondDTO = z.infer<typeof UserCondSchema>;
+export type CondUserDTO = z.infer<typeof CondUserSchema>;

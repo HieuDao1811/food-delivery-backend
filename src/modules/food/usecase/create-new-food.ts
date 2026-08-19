@@ -1,14 +1,15 @@
 import { v7 } from 'uuid';
-import { ICommandHandler } from '../../../shared/interface';
-import { CreateCommand, IFoodRepository } from '../interface';
-import { CreateFoodSchema } from '../model/dto';
 import { foodErrors } from '../model/error';
+import { CreateFoodSchema } from '../model/dto';
+import type { CreateCommand, IFoodRepository } from '../interface';
+import type { ICommandHandler } from '../../../shared/interface';
 
 export class CreateNewFoodCmdHandler implements ICommandHandler<CreateCommand, string> {
   constructor(private readonly repository: IFoodRepository) {}
 
   async execute(command: CreateCommand): Promise<string> {
     const { success, data: parsedData, error } = CreateFoodSchema.safeParse(command.cmd);
+
 
     if(!success) {
       throw foodErrors.invalidData(error.flatten());

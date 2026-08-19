@@ -1,4 +1,5 @@
-import { PagingDTO } from "../model/paging";
+import type { PagingDTO } from "../model/paging.js";
+
 
 
 // Repository

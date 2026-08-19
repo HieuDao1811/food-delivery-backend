@@ -1,7 +1,7 @@
 import { IQueryHandler, IQueryRepository } from "../../../shared/interface";
 import { GetDetailQuery } from "../interface";
 import { CondCategoryDTO } from "../model/dto";
-import { categoryErrors } from "../model/error";
+import { ErrorCategoryNotFound } from "../model/error";
 import { Category } from "../model/model";
 
 export class GetDetailQueryHandler implements IQueryHandler<GetDetailQuery, Category> {
@@ -11,7 +11,7 @@ export class GetDetailQueryHandler implements IQueryHandler<GetDetailQuery, Cate
     const result = await this.repository.get(query.id);
 
     if (!result) {
-      throw categoryErrors.notFound();
+      throw ErrorCategoryNotFound;
     }
 
     return result;

@@ -1,10 +1,10 @@
 import { Op, Sequelize } from "sequelize";
-import { PagingDTO } from "../../../../../shared/model/paging";
-import { FoodCondDTO, UpdateFoodDTO } from "../../../model/dto";
-import { Food, FoodSchema } from "../../../model/model";
-import { IRepository } from "../../../../../shared/interface";
-import { BaseRepositorySequlize } from "../../../../../shared/repository/base-repo-sequelize";
-import { modelName } from "./food.persistence";
+import { PagingDTO } from "../../../../shared/model/paging";
+import { FoodCondDTO, UpdateFoodDTO } from "../../model/dto";
+import { Food, FoodSchema } from "../../model/model";
+import { IRepository } from "../../../../shared/interface";
+import { BaseRepositorySequlize } from "../../../../shared/repository/base-repo-sequelize";
+import { modelName } from "./sequelize/food.persistence";
 
 // implement ORM here (Sequelize)
 
@@ -25,10 +25,10 @@ export class FoodRepository extends BaseRepositorySequlize<Food, FoodCondDTO, Up
       }) 
     };
 
-    const total = await this.sequelize.models[this.modelName].count({ where });
+    const total = await this.model.count({ where });
     paging.total = total;
 
-    const rows = await this.sequelize.models[this.modelName].findAll({
+    const rows = await this.model.findAll({
       where,
       offset: (page - 1) * limit,
       limit

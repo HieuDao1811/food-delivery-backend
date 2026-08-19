@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize";
-import { BaseRepositorySequlize } from "../../../../../shared/repository/base-repo-sequelize";
-import { CondCategoryDTO, UpdateCategoryDTO } from "../../../model/dto";
-import { Category } from "../../../model/model";
-import { modelName } from "./category.persistence";
-import { PagingDTO } from "../../../../../shared/model/paging";
+import { BaseRepositorySequlize } from "../../../../shared/repository/base-repo-sequelize";
+import { CondCategoryDTO, UpdateCategoryDTO } from "../../model/dto";
+import { Category } from "../../model/model";
+import { modelName } from "./sequelize/category.persistence";
+import { PagingDTO } from "../../../../shared/model/paging";
 
 
 export class CategoryRepository extends BaseRepositorySequlize<Category, CondCategoryDTO, UpdateCategoryDTO> {
@@ -12,7 +12,7 @@ export class CategoryRepository extends BaseRepositorySequlize<Category, CondCat
   }
 
   async listAll(): Promise<Array<Category>> {
-    const rows = await this.sequelize.models[this.modelName].findAll({
+    const rows = await this.model.findAll({
       order: [["createdAt", "ASC"]]
     });
 
@@ -23,10 +23,10 @@ export class CategoryRepository extends BaseRepositorySequlize<Category, CondCat
     const { page, limit } = paging;
     const condSQL = { ...cond };
 
-    const total = await this.sequelize.models[this.modelName].count({ where: condSQL });
+    const total = await this.model.count({ where: condSQL });
     paging.total = total;
 
-    const rows = await this.sequelize.models[this.modelName].findAll({
+    const rows = await this.model.findAll({
       where: condSQL,
       limit,
       offset: (page - 1) * limit
@@ -36,7 +36,7 @@ export class CategoryRepository extends BaseRepositorySequlize<Category, CondCat
   }
 
   async delete(id: string): Promise<boolean> {
-    const affected = await this.sequelize.models[this.modelName].destroy({ where: { id } });
+    const affected = await this.model.destroy({ where: { id } });
     return affected > 0;
   }
 }

@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 
 import { Router } from "express";
-import { CategoryRepository } from "./infras/repository/sequelize";
+import { CategoryRepository } from "./infras/repository";
 import { CreateNewCategoryCmdHandler } from "./usecase/create-new-category";
 import { CategoryHttpService } from "./infras/transport";
 import { init } from "./infras/repository/sequelize/category.persistence";

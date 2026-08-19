@@ -17,7 +17,20 @@ export const UserLoginSchema = UserSchema.pick({
 
 export type UserLoginDTO = z.infer<typeof UserLoginSchema>;
 
-export const UserUpdateSchema = z.object({
+export const CreateUserSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  avatar: z.string().url().optional(),
+  gender: z.enum(Gender).default(Gender.UNKNOWN),
+  email: z.string().email(),
+  password: z.string(),
+  role: z.enum(UserRole).default(UserRole.CUSTOMER),
+  status: z.enum(UserStatus).default(UserStatus.ACTIVE)
+});
+
+export type CreateUserDTO = z.infer<typeof CreateUserSchema>
+
+export const UpdateUserSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   avatar: z.string().url().optional(),
@@ -26,7 +39,7 @@ export const UserUpdateSchema = z.object({
   password: z.string().optional()
 });
 
-export type UserUpdateDTO = z.infer<typeof UserUpdateSchema>;
+export type UpdateUserDTO = z.infer<typeof UpdateUserSchema>;
 
 export const UserCondSchema = z.object({
   firstName: z.string().optional(),

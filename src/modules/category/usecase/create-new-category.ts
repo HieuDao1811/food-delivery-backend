@@ -2,7 +2,7 @@ import { v7 } from "uuid";
 import { ICommandHandler } from "../../../shared/interface";
 import { CreateCommand, ICategoryRepository } from "../interface";
 import { CreateCategorySchema } from "../model/dto";
-import { categoryErrors } from "../model/error";
+import { ErrorCategoryNameDuplicated, ErrorCategoryParentNotFound, ErrorInvalidCategoryData } from "../model/error";
 
 export class CreateNewCategoryCmdHandler implements ICommandHandler<CreateCommand, string> {
   constructor(private readonly repository: ICategoryRepository) {}
@@ -11,19 +11,19 @@ export class CreateNewCategoryCmdHandler implements ICommandHandler<CreateComman
     const { success, data: parsedData, error } = CreateCategorySchema.safeParse(command.cmd);
 
     if (!success) {
-      throw categoryErrors.invalidData(error.flatten());
+      throw ErrorInvalidCategoryData;
     }
 
     const isExist = await this.repository.findByCond({ name: parsedData.name });
     if (isExist) {
-      throw categoryErrors.nameDuplicated();
+      throw ErrorCategoryNameDuplicated;
     }
 
     if (parsedData.parentId) {
       const parent = await this.repository.get(parsedData.parentId);
 
       if (!parent) {
-        throw categoryErrors.parentNotFound();
+        throw ErrorCategoryParentNotFound;
       }
     }
 

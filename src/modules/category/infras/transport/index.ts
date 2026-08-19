@@ -3,28 +3,8 @@ import { ICommandHandler, IQueryHandler } from "../../../../shared/interface";
 import { PagingSchema } from "../../../../shared/model/paging";
 import { CreateCommand, DeleteCommand, GetDetailQuery, ListQuery, UpdateCommand } from "../../interface";
 import { CondCategorySchema } from "../../model/dto";
-import { CategoryError, categoryErrors } from "../../model/error";
+import { ErrorInvalidCategoryData } from "../../model/error";
 import { Category } from "../../model/model";
-
-const sendError = (res: Response, error: unknown) => {
-  if (error instanceof CategoryError) {
-    return res.status(error.statusCode).json({
-      error: {
-        code: error.code,
-        message: error.message,
-        ...(error.details !== undefined && { details: error.details })
-      }
-    });
-  }
-
-  console.error(error);
-  return res.status(500).json({
-    error: {
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Internal server error"
-    }
-  });
-};
 
 export class CategoryHttpService {
   constructor(
@@ -42,7 +22,7 @@ export class CategoryHttpService {
         data: result
       })
     } catch (error) {
-      sendError(res, error);
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 
@@ -54,7 +34,7 @@ export class CategoryHttpService {
         data: category
       })
     } catch (error) {
-      sendError(res, error);
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 
@@ -64,10 +44,7 @@ export class CategoryHttpService {
       const condResult = CondCategorySchema.safeParse(req.query);
 
       if (!pagingResult.success || !condResult.success) {
-        throw categoryErrors.invalidData({
-          paging: pagingResult.success ? undefined : pagingResult.error.flatten(),
-          filter: condResult.success ? undefined : condResult.error.flatten()
-        });
+        throw ErrorInvalidCategoryData;
       }
 
       const paging = pagingResult.data;
@@ -80,7 +57,7 @@ export class CategoryHttpService {
         filter: cond
       })
     } catch (error) {
-      sendError(res, error);
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 
@@ -92,7 +69,7 @@ export class CategoryHttpService {
       });
       res.status(200).json({ data: true });
     } catch (error) {
-      sendError(res, error);
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 
@@ -101,7 +78,7 @@ export class CategoryHttpService {
       await this.deleteCmdHandler.execute({ id: req.params.id as string });
       res.status(204).send();
     } catch (error) {
-      sendError(res, error);
+      res.status(400).json({ message: (error as Error).message });
     }
   }
 }

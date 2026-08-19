@@ -1,7 +1,13 @@
 import { ICommandHandler } from "../../../shared/interface";
 import { ICategoryRepository, UpdateCommand } from "../interface";
 import { UpdateCategorySchema } from "../model/dto";
-import { categoryErrors } from "../model/error";
+import {
+  ErrorCategoryNameDuplicated,
+  ErrorCategoryNotFound,
+  ErrorCategoryParentNotFound,
+  ErrorInvalidCategoryData,
+  ErrorInvalidCategoryParent
+} from "../model/error";
 
 export class UpdateCategoryCmdHandler implements ICommandHandler<UpdateCommand, boolean> {
   constructor(private readonly repository: ICategoryRepository) {}
@@ -10,18 +16,18 @@ export class UpdateCategoryCmdHandler implements ICommandHandler<UpdateCommand, 
     const { success, data, error } = UpdateCategorySchema.safeParse(command.cmd);
 
     if (!success) {
-      throw categoryErrors.invalidData(error.flatten());
+      throw ErrorInvalidCategoryData;
     }
 
     const category = await this.repository.get(command.id);
     if (!category) {
-      throw categoryErrors.notFound();
+      throw ErrorCategoryNotFound;
     }
 
     if (data.name) {
       const duplicatedCategory = await this.repository.findByCond({ name: data.name });
       if (duplicatedCategory && duplicatedCategory.id !== command.id) {
-        throw categoryErrors.nameDuplicated();
+        throw ErrorCategoryNameDuplicated;
       }
     }
 
@@ -31,13 +37,13 @@ export class UpdateCategoryCmdHandler implements ICommandHandler<UpdateCommand, 
 
       while (ancestorId) {
         if (ancestorId === command.id || visited.has(ancestorId)) {
-          throw categoryErrors.invalidParent();
+          throw ErrorInvalidCategoryParent;
         }
 
         visited.add(ancestorId);
         const ancestor = await this.repository.get(ancestorId);
         if (!ancestor) {
-          throw categoryErrors.parentNotFound();
+          throw ErrorCategoryParentNotFound;
         }
 
         ancestorId = ancestor.parentId;
@@ -46,7 +52,7 @@ export class UpdateCategoryCmdHandler implements ICommandHandler<UpdateCommand, 
 
     const updated = await this.repository.update(command.id, data);
     if (!updated) {
-      throw categoryErrors.notFound();
+      throw ErrorCategoryNotFound;
     }
 
     return true;

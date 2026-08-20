@@ -16,4 +16,13 @@ export interface ListUserQuery {
   paging: PagingDTO
 }
 
+export interface GetUserDetailQuery {
+  id: string
+}
+
+export interface UpdateUserCommand {
+  id: string,
+  cmd: UpdateUserDTO
+}
+
 export interface IUserRepository extends BaseRepositorySequlize<User, CondUserDTO, UpdateUserDTO> {}

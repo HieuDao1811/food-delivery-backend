@@ -36,7 +36,8 @@ export const UpdateUserSchema = z.object({
   avatar: z.string().url().optional(),
   gender: z.enum(Gender).optional(),
   email: z.string().email().optional(),
-  password: z.string().optional()
+  password: z.string().optional(),
+  status: z.enum(UserStatus).optional()
 });
 
 export type UpdateUserDTO = z.infer<typeof UpdateUserSchema>;

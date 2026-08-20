@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import { BaseRepositorySequlize } from "../../../../shared/repository/base-repo-sequelize";
 import { CondUserDTO, UpdateUserDTO } from "../../model/dto";
-import { User } from "../../model/model";
+import { User, UserStatus } from "../../model/model";
 import { modelName } from "./sequelize/user.persistence";
 import { PagingDTO } from "../../../../shared/model/paging";
 
@@ -13,7 +13,7 @@ export class UserRepository extends BaseRepositorySequlize<User, CondUserDTO, Up
   async list(cond: CondUserDTO, paging: PagingDTO): Promise<Array<User>> {
     const { page, limit } = paging;
     const offset = (page - 1) * limit;
-    const condSQL = { ...cond };
+    const condSQL = { ...cond, status: UserStatus.ACTIVE };
 
     const model = this.sequelize.models[this.modelName];
 

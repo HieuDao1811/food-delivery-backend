@@ -2,6 +2,7 @@ import { ICommandHandler } from "../../../shared/interface";
 import { IUserRepository, UpdateUserCommand } from "../interface";
 import { UpdateUserSchema } from "../model/dto";
 import { ErrorInvalidUpdateData, ErrorUserNotFound } from "../model/error";
+import { UserStatus } from "../model/model";
 
 export class UpdateUserCmdHandler implements ICommandHandler<UpdateUserCommand, boolean> {
   constructor(private readonly repository: IUserRepository) {}
@@ -15,7 +16,7 @@ export class UpdateUserCmdHandler implements ICommandHandler<UpdateUserCommand, 
 
     const user = await this.repository.get(command.id);
     
-    if (!user) {
+    if (!user || user.status === UserStatus.DELETED) {
       throw ErrorUserNotFound;
     }
 

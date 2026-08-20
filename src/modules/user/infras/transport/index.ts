@@ -7,6 +7,7 @@ import { PagingSchema } from "../../../../shared/model/paging";
 import { CondUserSchema } from "../../model/dto";
 import { GetUserDetailQueryHandler } from "../../usecase/get-user-detail";
 import { UpdateUserCmdHandler } from "../../usecase/update-user";
+import { DeleteUserCmdHandler } from "../../usecase/delete-user";
 
 export class UserHttpService {
   constructor(
@@ -14,7 +15,8 @@ export class UserHttpService {
     private readonly getDetailQueryHandler: GetUserDetailQueryHandler,
     private readonly listQueryHandler: ListUserQueryHandler,
     private readonly createCommandHandler: CreateNewUserCmdHandler,
-    private readonly updateCommandHandler: UpdateUserCmdHandler
+    private readonly updateCommandHandler: UpdateUserCmdHandler,
+    private readonly deleteCommandHandler: DeleteUserCmdHandler
   ) {}
 
   async registerAPI(req: Request, res: Response) {
@@ -76,6 +78,16 @@ export class UserHttpService {
     try {
       const id = req.params.id as string;
       const result = await this.updateCommandHandler.execute({ id, cmd: req.body });
+      res.status(200).json({ data: true });
+    } catch (error) {
+      res.status(400).json({ mesage: (error as Error).message });
+    }
+  }
+
+  async deleteAPI(req: Request, res: Response) {
+    try {
+      const id = req.params.id as string;
+      const result = await this.deleteCommandHandler.execute({ id });
       res.status(200).json({ data: true });
     } catch (error) {
       res.status(400).json({ mesage: (error as Error).message });

@@ -25,4 +25,8 @@ export interface UpdateUserCommand {
   cmd: UpdateUserDTO
 }
 
+export interface DeleteUserCommand {
+  id: string
+}
+
 export interface IUserRepository extends BaseRepositorySequlize<User, CondUserDTO, UpdateUserDTO> {}

@@ -8,6 +8,7 @@ import { CreateNewUserCmdHandler } from "./usecase/create-new-user";
 import { ListUserQueryHandler } from "./usecase/list-user";
 import { GetUserDetailQueryHandler } from "./usecase/get-user-detail";
 import { UpdateUserCmdHandler } from "./usecase/update-user";
+import { DeleteUserCmdHandler } from "./usecase/delete-user";
 
 export const setupUserHexagon = (sequelize: Sequelize) => {
   init(sequelize);
@@ -19,13 +20,15 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   const listQueryHandler = new ListUserQueryHandler(repository);
   const getDetailQueryHandler = new GetUserDetailQueryHandler(repository);
   const updateCommandHandler = new UpdateUserCmdHandler(repository);
+  const deleteCommandHandler = new DeleteUserCmdHandler(repository);
 
   const httpService = new UserHttpService(
     registerCommandHandler,
     getDetailQueryHandler,
     listQueryHandler,
     createCommandHandler,
-    updateCommandHandler
+    updateCommandHandler,
+    deleteCommandHandler
   )
 
   const router = Router();
@@ -36,6 +39,7 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   router.get('/users', httpService.listAPI.bind(httpService));
   router.post('/users', httpService.createAPI.bind(httpService));
   router.patch('/users/:id', httpService.updateAPI.bind(httpService));
+  router.delete('/users/:id', httpService.deleteAPI.bind(httpService));
 
   return router;
 }

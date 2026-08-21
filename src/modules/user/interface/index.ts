@@ -33,4 +33,8 @@ export interface LoginCommand {
   cmd: LoginUserDTO
 }
 
+export interface ProfileQuery {
+  id: string
+}
+
 export interface IUserRepository extends BaseRepositorySequlize<User, CondUserDTO, UpdateUserDTO> {}

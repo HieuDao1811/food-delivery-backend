@@ -27,14 +27,14 @@ export interface IQueryHandler<Query, Result> {
   query(query: Query): Promise<Result>;
 }
 
-export enum UserRole {
+export enum Role {
   ADMIN = "admin",
   CUSTOMER = "customer"
 }
 
 export interface TokenPayload {
   sub: string,
-  role: UserRole
+  role: Role
 }
 
 export interface Requester extends TokenPayload {}

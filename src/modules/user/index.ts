@@ -9,6 +9,8 @@ import { ListUserQueryHandler } from "./usecase/list-user";
 import { GetUserDetailQueryHandler } from "./usecase/get-user-detail";
 import { UpdateUserCmdHandler } from "./usecase/update-user";
 import { DeleteUserCmdHandler } from "./usecase/delete-user";
+import { LoginCommandHandler } from "./usecase/login";
+import { ProfileUserQueryHandler } from "./usecase/profile";
 
 export const setupUserHexagon = (sequelize: Sequelize) => {
   init(sequelize);
@@ -16,6 +18,9 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   const repository = new UserRepository(sequelize);
 
   const registerCommandHandler = new RegisterUserCmdHandler(repository);
+  const loginCommandHandler = new LoginCommandHandler(repository);
+  const profileQueryHandler = new ProfileUserQueryHandler(repository);
+
   const createCommandHandler = new CreateNewUserCmdHandler(repository);
   const listQueryHandler = new ListUserQueryHandler(repository);
   const getDetailQueryHandler = new GetUserDetailQueryHandler(repository);
@@ -24,6 +29,8 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
 
   const httpService = new UserHttpService(
     registerCommandHandler,
+    loginCommandHandler,
+    profileQueryHandler,
     getDetailQueryHandler,
     listQueryHandler,
     createCommandHandler,
@@ -34,6 +41,8 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   const router = Router();
 
   router.post('/register', httpService.registerAPI.bind(httpService));
+  router.post('/authenticate', httpService.loginAPI.bind(httpService));
+  router.get('/profile', httpService.profileAPI.bind(httpService));
   
   router.get('/users/:id', httpService.getDetailAPI.bind(httpService));
   router.get('/users', httpService.listAPI.bind(httpService));

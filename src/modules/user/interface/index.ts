@@ -1,6 +1,6 @@
 import { PagingDTO } from "../../../shared/model/paging";
 import { BaseRepositorySequlize } from "../../../shared/repository/base-repo-sequelize";
-import { CondUserDTO, CreateUserDTO, RegisterUserDTO, UpdateUserDTO } from "../model/dto";
+import { CondUserDTO, CreateUserDTO, LoginUserDTO, RegisterUserDTO, UpdateUserDTO } from "../model/dto";
 import { User } from "../model/model";
 
 export interface RegisterUserCommand {
@@ -27,6 +27,10 @@ export interface UpdateUserCommand {
 
 export interface DeleteUserCommand {
   id: string
+}
+
+export interface LoginCommand {
+  cmd: LoginUserDTO
 }
 
 export interface IUserRepository extends BaseRepositorySequlize<User, CondUserDTO, UpdateUserDTO> {}

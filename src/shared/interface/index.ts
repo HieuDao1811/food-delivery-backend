@@ -26,3 +26,20 @@ export interface ICommandHandler<Command, Result> {
 export interface IQueryHandler<Query, Result> {
   query(query: Query): Promise<Result>;
 }
+
+export enum UserRole {
+  ADMIN = "admin",
+  CUSTOMER = "customer"
+}
+
+export interface TokenPayload {
+  sub: string,
+  role: UserRole
+}
+
+export interface Requester extends TokenPayload {}
+
+export interface ITokenProvider {
+  generateToken(payload: TokenPayload): Promise<string>;
+  verifyToken(token: string): Promise<TokenPayload | null>;
+}

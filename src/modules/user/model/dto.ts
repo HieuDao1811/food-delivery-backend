@@ -50,3 +50,10 @@ export const CondUserSchema = z.object({
 });
 
 export type CondUserDTO = z.infer<typeof CondUserSchema>;
+
+export const LoginUserSchema = UserSchema.pick({
+  email: true,
+  password: true
+});
+
+export type LoginUserDTO = z.infer<typeof LoginUserSchema>;

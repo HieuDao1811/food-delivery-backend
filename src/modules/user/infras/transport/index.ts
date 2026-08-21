@@ -93,4 +93,12 @@ export class UserHttpService {
       res.status(400).json({ mesage: (error as Error).message });
     }
   }
+
+  async loginAPI(req: Request, res: Response) {
+    try {
+      //const result
+    } catch (error) {
+      res.status(400).json({ mesage: (error as Error).message });
+    }
+  }
 }

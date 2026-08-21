@@ -5,3 +5,6 @@ export const ErrorInvalidUserCondition = new Error("Invalid user condition");
 export const ErrorInvalidQuery = new Error("Invalid query");
 export const ErrorUserNotFound = new Error("User not found");
 export const ErrorInvalidUpdateData = new Error("Invali update data");
+export const ErrorInvalidLoginData = new Error("Error invalid login data");
+export const ErrorInvalidEmailOrPassword = new Error("Error invalid email or password");
+export const ErrorUserInactivated = new Error("User is inactivated or banned");

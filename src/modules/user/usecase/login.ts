@@ -1,13 +1,15 @@
 import brcypt from "bcrypt";
 
-import { ICommandHandler } from "../../../shared/interface";
+import { ICommandHandler, Role } from "../../../shared/interface";
 import { IUserRepository, LoginCommand } from "../interface";
 import { LoginUserSchema } from "../model/dto";
 import { ErrorInvalidEmailOrPassword, ErrorInvalidLoginData, ErrorUserInactivated } from "../model/error";
-import { UserStatus } from "../model/model";
+import { UserRole, UserStatus } from "../model/model";
+import { jwtProvider } from "../../../shared/component/jwt";
 
 export class LoginCommandHandler implements ICommandHandler<LoginCommand, string> {
   constructor(private readonly repository: IUserRepository) {}
+
   async execute(command: LoginCommand): Promise<string> {
     const { success, data, error } = LoginUserSchema.safeParse(command.cmd);
 
@@ -21,6 +23,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand, string
       throw ErrorInvalidEmailOrPassword;
     }
 
+    // Check password
     const isValid = brcypt.compareSync(data.password, user.password);
 
     if (!isValid) {
@@ -31,7 +34,11 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand, string
       throw ErrorUserInactivated;
     }
 
-    return "";
+    // Return token
+    const role = user.role === UserRole.ADMIN ? Role.ADMIN : Role.CUSTOMER;
+    const token = jwtProvider.generateToken({ sub: user.id, role });
+
+    return token;
   }
 
 }

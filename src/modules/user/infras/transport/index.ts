@@ -8,10 +8,15 @@ import { CondUserSchema } from "../../model/dto";
 import { GetUserDetailQueryHandler } from "../../usecase/get-user-detail";
 import { UpdateUserCmdHandler } from "../../usecase/update-user";
 import { DeleteUserCmdHandler } from "../../usecase/delete-user";
+import { LoginCommandHandler } from "../../usecase/login";
+import { ProfileUserQueryHandler } from "../../usecase/profile";
+import { jwtProvider } from "../../../../shared/component/jwt";
 
 export class UserHttpService {
   constructor(
     private readonly registerCommandHandler: RegisterUserCmdHandler,
+    private readonly loginCommandHandler: LoginCommandHandler,
+    private readonly profileQueryHandler: ProfileUserQueryHandler,
     private readonly getDetailQueryHandler: GetUserDetailQueryHandler,
     private readonly listQueryHandler: ListUserQueryHandler,
     private readonly createCommandHandler: CreateNewUserCmdHandler,
@@ -25,6 +30,41 @@ export class UserHttpService {
         cmd: req.body,
       });
       res.status(201).json({ data: result });
+    } catch (error) {
+      res.status(400).json({ mesage: (error as Error).message });
+    }
+  }
+
+  async loginAPI(req: Request, res: Response) {
+    try {
+      const result = await this.loginCommandHandler.execute({ cmd: req.body });
+      res.status(200).json({ data: result });
+    } catch (error) {
+      res.status(400).json({ mesage: (error as Error).message });
+    }
+  }
+
+  async profileAPI(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const payload = await jwtProvider.verifyToken(token);
+      if (!payload) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+      }
+
+      const { sub } = payload;
+
+      const user = await this.profileQueryHandler.query({ id: sub });
+
+      const { password, status, role, salt, ... otherProps  } = user;
+
+      res.status(200).json({ data: otherProps });
     } catch (error) {
       res.status(400).json({ mesage: (error as Error).message });
     }
@@ -89,14 +129,6 @@ export class UserHttpService {
       const id = req.params.id as string;
       const result = await this.deleteCommandHandler.execute({ id });
       res.status(200).json({ data: true });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
-  }
-
-  async loginAPI(req: Request, res: Response) {
-    try {
-      //const result
     } catch (error) {
       res.status(400).json({ mesage: (error as Error).message });
     }

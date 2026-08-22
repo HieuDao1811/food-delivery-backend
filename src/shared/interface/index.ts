@@ -47,7 +47,7 @@ export interface ITokenProvider {
 
 export type TokenIntrospectResult = {
   payload: TokenPayload | null;
-  error: Error;
+  error?: Error;
   isOk: boolean;
 }
 

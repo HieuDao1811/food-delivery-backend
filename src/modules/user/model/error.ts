@@ -8,3 +8,4 @@ export const ErrorInvalidUpdateData = new Error("Invali update data");
 export const ErrorInvalidLoginData = new Error("Error invalid login data");
 export const ErrorInvalidEmailOrPassword = new Error("Error invalid email or password");
 export const ErrorUserInactivated = new Error("User is inactivated or banned");
+export const ErrorInvalidToken = new Error("Invalid token");

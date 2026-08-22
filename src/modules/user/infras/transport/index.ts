@@ -22,7 +22,8 @@ export class UserHttpService {
     private readonly listQueryHandler: ListUserQueryHandler,
     private readonly createCommandHandler: CreateNewUserCmdHandler,
     private readonly updateCommandHandler: UpdateUserCmdHandler,
-    private readonly deleteCommandHandler: DeleteUserCmdHandler
+    private readonly deleteCommandHandler: DeleteUserCmdHandler,
+    private readonly verifyTokenQueryHandler: VerifyTokenQueryHandler
   ) {}
 
   async registerAPI(req: Request, res: Response) {
@@ -135,5 +136,13 @@ export class UserHttpService {
     }
   }
 
-  
+  async introspectAPI(req: Request, res: Response) {
+    try {
+      const { token } = req.body;
+      const result = await this.verifyTokenQueryHandler.query({ token });
+      res.status(200).json({ data: result });
+    } catch (error) {
+      res.status(400).json({ mesage: (error as Error).message });
+    }
+  }
 }

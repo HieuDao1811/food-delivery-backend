@@ -27,6 +27,7 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   const getDetailQueryHandler = new GetUserDetailQueryHandler(repository);
   const updateCommandHandler = new UpdateUserCmdHandler(repository);
   const deleteCommandHandler = new DeleteUserCmdHandler(repository);
+  const verifyTokenQueryHandler = new VerifyTokenQueryHandler(repository);
 
   const httpService = new UserHttpService(
     registerCommandHandler,
@@ -36,7 +37,8 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
     listQueryHandler,
     createCommandHandler,
     updateCommandHandler,
-    deleteCommandHandler
+    deleteCommandHandler,
+    verifyTokenQueryHandler
   )
 
   const router = Router();
@@ -52,6 +54,6 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   router.delete('/users/:id', httpService.deleteAPI.bind(httpService));
 
   // rpc use internally
-
+  router.post('/rpc/introspect', httpService.introspectAPI.bind(httpService));
   return router;
 }

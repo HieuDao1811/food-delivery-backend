@@ -6,31 +6,26 @@ export function authMiddleware(
 ): Handler {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Get token from header
+      // Get token
       const token = req.headers.authorization?.split(' ')[1];
       if (!token) {
-        res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: "Unauthorized" });
         return;
       }
 
-      // Introspect token
+      // Verify token
       const { payload, error, isOk } = await introspector.introspect(token);
       if (!isOk) {
-        res.status(401).json({ error: 'Unauthorized' });
-        return;
+        res.status(401).json({ error: error?.message || "Unauthorized" });
       }
 
       const requester = payload as Requester;
 
-      // Set requester to res.locals
-
-      res.locals['requester'] = requester;
+      res.locals.requester = requester;
 
       return next();
-
     } catch (error) {
-      res.status(401).json({ error: 'Unauthorized' });
-      return;
+      res.status(401).json({ error: (error as Error).message })
     }
   }
 }

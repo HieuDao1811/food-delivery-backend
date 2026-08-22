@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import { init } from "./infras/repository/sequelize/user.persistence";
 import { RegisterUserCmdHandler } from "./usecase/register-user";
-import { UserRepository } from "./infras/repository";
+import { UserRepository } from "./infras/repository/sequelize";
 import { Router } from "express";
 import { UserHttpService } from "./infras/transport";
 import { CreateNewUserCmdHandler } from "./usecase/create-new-user";

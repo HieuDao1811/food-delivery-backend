@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize";
-import { BaseRepositorySequlize } from "../../../../shared/repository/base-repo-sequelize";
-import { CondUserDTO, UpdateUserDTO } from "../../model/dto";
-import { User, UserStatus } from "../../model/model";
-import { modelName } from "./sequelize/user.persistence";
-import { PagingDTO } from "../../../../shared/model/paging";
+import { BaseRepositorySequlize } from "../../../../../shared/repository/base-repo-sequelize";
+import { CondUserDTO, UpdateUserDTO } from "../../../model/dto";
+import { User, UserStatus } from "../../../model/model";
+import { modelName } from "./user.persistence";
+import { PagingDTO } from "../../../../../shared/model/paging";
 
 export class UserRepository extends BaseRepositorySequlize<User, CondUserDTO, UpdateUserDTO> {
   constructor(sequelize: Sequelize) {

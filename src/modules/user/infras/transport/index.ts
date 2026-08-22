@@ -142,7 +142,7 @@ export class UserHttpService {
       const result = await this.verifyTokenQueryHandler.query({ token });
       res.status(200).json({ data: result });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+      res.status(401).json({ mesage: (error as Error).message });
     }
   }
 }

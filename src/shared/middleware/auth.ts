@@ -17,13 +17,14 @@ export function authMiddleware(
       const { payload, error, isOk } = await introspector.introspect(token);
       if (!isOk) {
         res.status(401).json({ error: error?.message || "Unauthorized" });
+        return;
       }
 
       const requester = payload as Requester;
 
       res.locals.requester = requester;
 
-      return next();
+      next();
     } catch (error) {
       res.status(401).json({ error: (error as Error).message })
     }

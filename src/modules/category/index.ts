@@ -9,8 +9,10 @@ import { GetDetailQueryHandler } from "./usecase/get-category-detail";
 import { ListCategoryQueryHandler } from "./usecase/list-category";
 import { UpdateCategoryCmdHandler } from "./usecase/update-category";
 import { DeleteCategoryCmdHandler } from "./usecase/delete-category";
+import { ServiceContext } from "../../shared/interface/service-context";
+import { Role } from "../../shared/interface";
 
-export const setupCategoryHexagon = (sequelize: Sequelize) => {
+export const setupCategoryHexagon = (sequelize: Sequelize, sctx: ServiceContext) => {
   init(sequelize);
 
   const repository = new CategoryRepository(sequelize);
@@ -29,12 +31,14 @@ export const setupCategoryHexagon = (sequelize: Sequelize) => {
   );
 
   const router = Router();
+  const mdlFactory = sctx.mdlFactory;
+  const adminChecker = mdlFactory.allowRoles([Role.ADMIN])
 
-  router.post('/categories', httpService.createAPI.bind(httpService));
+  router.post('/categories', mdlFactory.auth, adminChecker, httpService.createAPI.bind(httpService));
   router.get('/categories/:id', httpService.getAPI.bind(httpService));
   router.get('/categories', httpService.listAPI.bind(httpService));
-  router.patch('/categories/:id', httpService.updateAPI.bind(httpService));
-  router.delete('/categories/:id', httpService.deleteAPI.bind(httpService));
+  router.patch('/categories/:id', mdlFactory.auth, adminChecker, httpService.updateAPI.bind(httpService));
+  router.delete('/categories/:id', mdlFactory.auth, adminChecker, httpService.deleteAPI.bind(httpService));
 
   return router;
 }

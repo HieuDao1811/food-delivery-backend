@@ -43,3 +43,13 @@ export interface ITokenProvider {
   generateToken(payload: TokenPayload): Promise<string>;
   verifyToken(token: string): Promise<TokenPayload | null>;
 }
+
+export interface TokenIntrospectResult {
+  payload: TokenPayload,
+  error?: Error,
+  isOk: boolean
+}
+
+export interface ITokenIntrospect {
+  introspect(token: string): Promise<TokenIntrospectResult>;
+}

@@ -1,5 +1,6 @@
 import z from "zod";
-import { Gender, UserRole, UserSchema, UserStatus } from "./model";
+import { Gender, UserSchema, UserStatus } from "./model";
+import { Role } from "../../../shared/interface";
 
 export const RegisterUserSchema = UserSchema.pick({
   firstName: true,
@@ -24,7 +25,7 @@ export const CreateUserSchema = z.object({
   gender: z.enum(Gender).default(Gender.UNKNOWN),
   email: z.string().email(),
   password: z.string(),
-  role: z.enum(UserRole).default(UserRole.CUSTOMER),
+  role: z.enum(Role).default(Role.CUSTOMER),
   status: z.enum(UserStatus).default(UserStatus.ACTIVE)
 });
 

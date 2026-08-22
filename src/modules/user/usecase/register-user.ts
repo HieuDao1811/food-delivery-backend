@@ -1,11 +1,11 @@
 import { v7 } from "uuid";
 import bcrypt from "bcrypt";
-import { ICommandHandler } from "../../../shared/interface";
+import { ICommandHandler, Role } from "../../../shared/interface";
 import { UserRepository } from "../infras/repository";
 import { RegisterUserCommand } from "../interface";
 import { RegisterUserSchema } from "../model/dto";
 import { ErrorInvalidRegistrationData, ErrorUserIsExisted } from "../model/error";
-import { Gender, UserRole, UserStatus } from "../model/model";
+import { Gender, UserStatus } from "../model/model";
 
 export class RegisterUserCmdHandler implements ICommandHandler<RegisterUserCommand, string> {
   constructor(private readonly repository: UserRepository) {}
@@ -35,7 +35,7 @@ export class RegisterUserCmdHandler implements ICommandHandler<RegisterUserComma
       salt: salt,
       gender: Gender.UNKNOWN,
       status: UserStatus.ACTIVE,
-      role: UserRole.CUSTOMER,
+      role: Role.CUSTOMER,
       createdAt: new Date(),
       updatedAt: new Date()
     }

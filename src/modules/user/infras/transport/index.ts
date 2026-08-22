@@ -11,6 +11,7 @@ import { DeleteUserCmdHandler } from "../../usecase/delete-user";
 import { LoginCommandHandler } from "../../usecase/login";
 import { ProfileUserQueryHandler } from "../../usecase/profile";
 import { jwtProvider } from "../../../../shared/component/jwt";
+import { VerifyTokenQueryHandler } from "../../usecase/verify-token";
 
 export class UserHttpService {
   constructor(
@@ -133,4 +134,6 @@ export class UserHttpService {
       res.status(400).json({ mesage: (error as Error).message });
     }
   }
+
+  
 }

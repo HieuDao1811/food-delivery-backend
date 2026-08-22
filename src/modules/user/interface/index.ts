@@ -37,4 +37,8 @@ export interface ProfileQuery {
   id: string
 }
 
+export interface VerifyTokenQuery {
+  token: string
+}
+
 export interface IUserRepository extends BaseRepositorySequlize<User, CondUserDTO, UpdateUserDTO> {}

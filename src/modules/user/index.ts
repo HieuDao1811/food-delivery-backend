@@ -11,6 +11,7 @@ import { UpdateUserCmdHandler } from "./usecase/update-user";
 import { DeleteUserCmdHandler } from "./usecase/delete-user";
 import { LoginCommandHandler } from "./usecase/login";
 import { ProfileUserQueryHandler } from "./usecase/profile";
+import { VerifyTokenQueryHandler } from "./usecase/verify-token";
 
 export const setupUserHexagon = (sequelize: Sequelize) => {
   init(sequelize);
@@ -49,6 +50,8 @@ export const setupUserHexagon = (sequelize: Sequelize) => {
   router.post('/users', httpService.createAPI.bind(httpService));
   router.patch('/users/:id', httpService.updateAPI.bind(httpService));
   router.delete('/users/:id', httpService.deleteAPI.bind(httpService));
+
+  // rpc use internally
 
   return router;
 }

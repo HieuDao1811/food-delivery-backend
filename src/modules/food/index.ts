@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { Sequelize } from 'sequelize';
-import { FoodRepository } from './infras/repository';
+import { FoodRepository } from './infras/repository/sequelize';
 import { FoodHttpService } from './infras/transport';
 import { init } from './infras/repository/sequelize/food.persistence';
 import { CreateNewFoodCmdHandler } from './usecase/create-new-food';

@@ -4,7 +4,7 @@ import { ICommandHandler } from "../../../shared/interface";
 import { IUserRepository, LoginCommand } from "../interface";
 import { LoginUserSchema } from "../model/dto";
 import { ErrorInvalidEmailOrPassword, ErrorInvalidLoginData, ErrorUserInactivated } from "../model/error";
-import { UserStatus } from "../model/model";
+import { UserStatus } from "../model/user";
 import { jwtProvider } from "../../../shared/component/jwt";
 
 export class LoginCommandHandler implements ICommandHandler<LoginCommand, string> {

@@ -1,5 +1,5 @@
 import z from "zod";
-import { Gender, UserSchema, UserStatus } from "./model";
+import { Gender, UserSchema, UserStatus } from "./user";
 import {
   ErrEmailInvalid,
   ErrFirstNameAtLeast2Chars,

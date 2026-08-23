@@ -1,7 +1,7 @@
 import { IQueryHandler } from "../../../shared/interface";
 import { GetUserDetailQuery, IUserRepository } from "../interface";
 import { ErrorUserNotFound } from "../model/error";
-import { User, UserStatus } from "../model/model";
+import { User, UserStatus } from "../model/user";
 
 export class GetUserDetailQueryHandler implements IQueryHandler<GetUserDetailQuery, User> {
   constructor(private readonly repository: IUserRepository) {}

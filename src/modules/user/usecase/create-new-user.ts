@@ -4,7 +4,7 @@ import { ICommandHandler } from "../../../shared/interface";
 import { CreateUserCommand, IUserRepository } from "../interface";
 import { CreateUserSchema } from "../model/dto";
 import { ErrorInvalidCreationData, ErrorUserIsExisted } from "../model/error";
-import { User } from "../model/model";
+import { User } from "../model/user";
 
 export class CreateNewUserCmdHandler implements ICommandHandler<CreateUserCommand, string> {
   constructor(private readonly repository: IUserRepository) {}

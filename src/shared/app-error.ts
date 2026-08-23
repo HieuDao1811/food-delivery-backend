@@ -84,7 +84,7 @@ export const responseErr = (err: Error, res: Response) => {
       appErr.withDetail(issue.path.join('.'), issue.message);
     });
 
-    res.status(500).json(appErr.toJSON(isProduction));
+    res.status(appErr.getStatusCode()).json(appErr.toJSON(isProduction));
     return;
   }
 

@@ -35,8 +35,8 @@ export const setupCategoryHexagon = (sequelize: Sequelize, sctx: ServiceContext)
   const adminChecker = mdlFactory.allowRoles([Role.ADMIN])
 
   router.post('/categories', mdlFactory.auth, adminChecker, httpService.createAPI.bind(httpService));
-  router.get('/categories/:id', httpService.getAPI.bind(httpService));
-  router.get('/categories', httpService.listAPI.bind(httpService));
+  router.get('/categories/:id',  mdlFactory.auth, httpService.getAPI.bind(httpService));
+  router.get('/categories',  mdlFactory.auth, httpService.listAPI.bind(httpService));
   router.patch('/categories/:id', mdlFactory.auth, adminChecker, httpService.updateAPI.bind(httpService));
   router.delete('/categories/:id', mdlFactory.auth, adminChecker, httpService.deleteAPI.bind(httpService));
 

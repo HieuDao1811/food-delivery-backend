@@ -25,7 +25,7 @@ config();
     const introspector = new TokenIntrospectRPCClient(process.env.VERIFY_TOKEN_URL || `http://localhost:3000/v1/rpc/introspect`);
     const sctx = { mdlFactory: setupMiddleWares(introspector) };
 
-    app.use('/v1', setupFoodHexagon(sequelize));
+    app.use('/v1', setupFoodHexagon(sequelize, sctx));
     app.use('/v1', setupCategoryHexagon(sequelize, sctx));
     app.use('/v1', setupUserHexagon(sequelize, sctx));
     

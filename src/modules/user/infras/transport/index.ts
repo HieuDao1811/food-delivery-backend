@@ -13,6 +13,7 @@ import { ProfileUserQueryHandler } from "../../usecase/profile";
 import { VerifyTokenQueryHandler } from "../../usecase/verify-token";
 import { Requester } from "../../../../shared/interface";
 import { UpdateAccountCmdHandler } from "../../usecase/update-account";
+import { responseErr } from "../../../../shared/app-error";
 
 export class UserHttpService {
   constructor(
@@ -35,7 +36,7 @@ export class UserHttpService {
       });
       res.status(201).json({ data: result });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -44,7 +45,7 @@ export class UserHttpService {
       const result = await this.loginCommandHandler.execute({ cmd: req.body });
       res.status(200).json({ data: result });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+      responseErr(error as Error, res);
     }
   }
 
@@ -58,7 +59,7 @@ export class UserHttpService {
 
       res.status(200).json({ data: otherProps });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -69,7 +70,7 @@ export class UserHttpService {
       const user = await this.updateAccountCmdHandler.execute({ id: requester.sub, cmd: req.body });
       res.status(200).json({ data: user });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -83,7 +84,7 @@ export class UserHttpService {
 
       res.status(200).json({ data: otherProps });
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -106,7 +107,7 @@ export class UserHttpService {
         filter: cond,
       });
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -115,7 +116,7 @@ export class UserHttpService {
       const result = await this.createCommandHandler.execute({ cmd: req.body });
       res.status(201).json({ data: result });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+      responseErr(error as Error, res);
     }
   }
 
@@ -125,7 +126,7 @@ export class UserHttpService {
       const result = await this.updateCommandHandler.execute({ id, cmd: req.body });
       res.status(200).json({ data: true });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+      responseErr(error as Error, res);
     }
   }
 
@@ -135,7 +136,7 @@ export class UserHttpService {
       const result = await this.deleteCommandHandler.execute({ id });
       res.status(200).json({ data: true });
     } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
+      responseErr(error as Error, res);
     }
   }
 
@@ -145,7 +146,7 @@ export class UserHttpService {
       const result = await this.verifyTokenQueryHandler.query({ token });
       res.status(200).json({ data: result });
     } catch (error) {
-      res.status(401).json({ mesage: (error as Error).message });
+      responseErr(error as Error, res);
     }
   }
 }

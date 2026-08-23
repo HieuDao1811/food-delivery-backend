@@ -5,6 +5,7 @@ import { CreateCommand, DeleteCommand, GetDetailQuery, ListQuery, UpdateCommand 
 import { CondCategorySchema } from "../../model/dto";
 import { ErrorInvalidCategoryData } from "../../model/error";
 import { Category } from "../../model/model";
+import { responseErr } from "../../../../shared/app-error";
 
 export class CategoryHttpService {
   constructor(
@@ -22,7 +23,7 @@ export class CategoryHttpService {
         data: result
       })
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -34,7 +35,7 @@ export class CategoryHttpService {
         data: category
       })
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -57,7 +58,7 @@ export class CategoryHttpService {
         filter: cond
       })
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -69,7 +70,7 @@ export class CategoryHttpService {
       });
       res.status(200).json({ data: true });
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 
@@ -79,7 +80,7 @@ export class CategoryHttpService {
       await this.deleteCmdHandler.execute({ id: req.params.id as string });
       res.status(204).send();
     } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+        responseErr(error as Error, res);
     }
   }
 }

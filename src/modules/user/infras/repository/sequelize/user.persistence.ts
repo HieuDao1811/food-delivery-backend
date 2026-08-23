@@ -44,7 +44,7 @@ export function init(sequelize: Sequelize) {
         allowNull: false
       },
       role: {
-        type: DataTypes.ENUM("admin", "customer"),
+        type: DataTypes.ENUM("admin", "employee", "customer"),
         allowNull: false,
         defaultValue: "customer"
       },

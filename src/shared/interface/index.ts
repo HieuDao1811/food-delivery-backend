@@ -29,6 +29,7 @@ export interface IQueryHandler<Query, Result> {
 
 export enum Role {
   ADMIN = "admin",
+  EMPLOYEE = "employee",
   CUSTOMER = "customer"
 }
 
@@ -44,10 +45,10 @@ export interface ITokenProvider {
   verifyToken(token: string): Promise<TokenPayload | null>;
 }
 
-export interface TokenIntrospectResult {
-  payload: TokenPayload,
-  error?: Error,
-  isOk: boolean
+export type TokenIntrospectResult = {
+  payload: TokenPayload | null;
+  error?: Error;
+  isOk: boolean;
 }
 
 export interface ITokenIntrospect {

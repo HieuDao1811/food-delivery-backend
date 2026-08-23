@@ -58,3 +58,13 @@ export const LoginUserSchema = UserSchema.pick({
 });
 
 export type LoginUserDTO = z.infer<typeof LoginUserSchema>;
+
+export const UpdateAccountSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  gender: z.enum(Gender).optional(),
+  avatar: z.string().optional(),
+  password: z.string().optional()
+});
+
+export type UpdateAccountDTO = z.infer<typeof UpdateUserSchema>;

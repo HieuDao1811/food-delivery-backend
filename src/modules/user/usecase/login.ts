@@ -1,6 +1,6 @@
 import brcypt from "bcrypt";
 
-import { ICommandHandler, Role } from "../../../shared/interface";
+import { ICommandHandler } from "../../../shared/interface";
 import { IUserRepository, LoginCommand } from "../interface";
 import { LoginUserSchema } from "../model/dto";
 import { ErrorInvalidEmailOrPassword, ErrorInvalidLoginData, ErrorUserInactivated } from "../model/error";
@@ -35,7 +35,7 @@ export class LoginCommandHandler implements ICommandHandler<LoginCommand, string
     }
 
     // Return token
-    const role = user.role === Role.ADMIN ? Role.ADMIN : Role.CUSTOMER;
+    const role = user.role;
     const token = jwtProvider.generateToken({ sub: user.id, role });
 
     return token;

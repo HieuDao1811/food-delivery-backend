@@ -1,7 +1,7 @@
 import { v7 } from "uuid";
 import bcrypt from "bcrypt";
 import { ICommandHandler, Role } from "../../../shared/interface";
-import { UserRepository } from "../infras/repository";
+import { UserRepository } from "../infras/repository/sequelize";
 import { RegisterUserCommand } from "../interface";
 import { RegisterUserSchema } from "../model/dto";
 import { ErrorInvalidRegistrationData, ErrorUserIsExisted } from "../model/error";

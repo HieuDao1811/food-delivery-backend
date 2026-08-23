@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { config } from 'dotenv';
 import { sequelize } from './shared/component/sequelize';
 import { setupFoodHexagon } from './modules/food';
@@ -7,6 +7,7 @@ import { setupUserHexagon } from './modules/user';
 import morgan from 'morgan';
 import { setupMiddleWares } from './shared/middleware';
 import { TokenIntrospectRPCClient } from './shared/repository/verify-token.rpc';
+import { responseErr } from './shared/app-error';
 
 config();
 
@@ -28,7 +29,12 @@ config();
     app.use('/v1', setupFoodHexagon(sequelize, sctx));
     app.use('/v1', setupCategoryHexagon(sequelize, sctx));
     app.use('/v1', setupUserHexagon(sequelize, sctx));
-    
+  
+    app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+      responseErr(err, res);
+      return next();
+    })
+
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
     })

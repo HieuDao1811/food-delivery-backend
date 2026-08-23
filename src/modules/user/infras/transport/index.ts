@@ -29,123 +29,76 @@ export class UserHttpService {
   ) {}
 
   async registerAPI(req: Request, res: Response) {
-    try {
-      const result = await this.registerCommandHandler.execute({
-        cmd: req.body,
-      });
-      res.status(201).json({ data: result });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const result = await this.registerCommandHandler.execute({
+      cmd: req.body,
+    });
+    res.status(201).json({ data: result });
   }
 
   async loginAPI(req: Request, res: Response) {
-    try {
-      const result = await this.loginCommandHandler.execute({ cmd: req.body });
-      res.status(200).json({ data: result });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const result = await this.loginCommandHandler.execute({ cmd: req.body });
+    res.status(200).json({ data: result });
   }
 
   async profileAPI(req: Request, res: Response) {
-    try {
-      const requester = res.locals.requester as Requester;
-
-      const user = await this.profileQueryHandler.query({ id: requester.sub });
-
-      const { password, status, role, salt, ... otherProps  } = user;
-
-      res.status(200).json({ data: otherProps });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const requester = res.locals.requester as Requester;
+    const user = await this.profileQueryHandler.query({ id: requester.sub });
+    const { password, status, role, salt, ... otherProps  } = user;
+    res.status(200).json({ data: otherProps });
   }
 
   async accountAPI(req: Request, res: Response) {
-    try {
-      const requester = res.locals.requester as Requester;
-
-      const user = await this.updateAccountCmdHandler.execute({ id: requester.sub, cmd: req.body });
-      res.status(200).json({ data: user });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const requester = res.locals.requester as Requester;
+    const user = await this.updateAccountCmdHandler.execute({ id: requester.sub, cmd: req.body });
+    res.status(200).json({ data: user });
   }
 
   async getDetailAPI(req: Request, res: Response) {
-    try {
-      const id = req.params.id as string;
-
-      const result = await this.getDetailQueryHandler.query({ id });
-
-      const { role, salt, password, ...otherProps } = result;
-
-      res.status(200).json({ data: otherProps });
-    } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
-    }
+    const id = req.params.id as string;
+    const result = await this.getDetailQueryHandler.query({ id });
+    const { role, salt, password, ...otherProps } = result;
+    res.status(200).json({ data: otherProps });
   }
 
   async listAPI(req: Request, res: Response) {
-    try {
-      const pagingResult = PagingSchema.safeParse(req.query);
-      const condResult = CondUserSchema.safeParse(req.query);
+    const pagingResult = PagingSchema.safeParse(req.query);
+    const condResult = CondUserSchema.safeParse(req.query);
 
-      if (!pagingResult.success || !condResult.success) {
-        throw ErrorInvalidQuery;
-      }
-
-      const paging = pagingResult.data;
-      const cond = condResult.data;
-      const collection = await this.listQueryHandler.query({ cond, paging });
-
-      res.status(200).json({
-        data: collection,
-        paging,
-        filter: cond,
-      });
-    } catch (error) {
-      res.status(400).json({ message: (error as Error).message });
+    if (!pagingResult.success || !condResult.success) {
+      throw ErrorInvalidQuery;
     }
+
+    const paging = pagingResult.data;
+    const cond = condResult.data;
+    const collection = await this.listQueryHandler.query({ cond, paging });
+
+    res.status(200).json({
+      data: collection,
+      paging,
+      filter: cond,
+    });
   }
 
   async createAPI(req: Request, res: Response) {
-    try {
-      const result = await this.createCommandHandler.execute({ cmd: req.body });
-      res.status(201).json({ data: result });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const result = await this.createCommandHandler.execute({ cmd: req.body });
+    res.status(201).json({ data: result });
   }
 
   async updateAPI(req: Request, res: Response) {
-    try {
-      const id = req.params.id as string;
-      const result = await this.updateCommandHandler.execute({ id, cmd: req.body });
-      res.status(200).json({ data: true });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const id = req.params.id as string;
+    await this.updateCommandHandler.execute({ id, cmd: req.body });
+    res.status(200).json({ data: true });
   }
 
   async deleteAPI(req: Request, res: Response) {
-    try {
-      const id = req.params.id as string;
-      const result = await this.deleteCommandHandler.execute({ id });
-      res.status(200).json({ data: true });
-    } catch (error) {
-      res.status(400).json({ mesage: (error as Error).message });
-    }
+    const id = req.params.id as string;
+    await this.deleteCommandHandler.execute({ id });
+    res.status(200).json({ data: true });
   }
 
   async introspectAPI(req: Request, res: Response) {
-    try {
-      const { token } = req.body;
-      const result = await this.verifyTokenQueryHandler.query({ token });
-      res.status(200).json({ data: result });
-    } catch (error) {
-      res.status(401).json({ mesage: (error as Error).message });
-    }
+    const { token } = req.body;
+    const result = await this.verifyTokenQueryHandler.query({ token });
+    res.status(200).json({ data: result });
   }
 }

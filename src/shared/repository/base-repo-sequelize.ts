@@ -1,9 +1,18 @@
-import { Model, ModelStatic, Sequelize } from "sequelize";
+import { Model, ModelStatic, Op, Sequelize } from "sequelize";
 import { IRepository } from "../interface";
 import { PagingDTO } from "../model/paging";
 
 export abstract class BaseRepositorySequlize<Entity, Condition, UpdateDTO> implements IRepository<Entity, Condition, UpdateDTO> {
   constructor(protected readonly sequelize: Sequelize, protected readonly modelName: string) {}
+  
+  async listByIds(ids: string[]): Promise<Entity[]> {
+    const rows = await this.model.findAll({ where: {id: { [Op.in]: ids } } });
+    const persistenceData = rows.map((row) => {
+      return row.get({ plain: true });
+    });
+
+    return persistenceData as Entity[];
+  }
 
   protected get model(): ModelStatic<Model> {
     const model = this.sequelize.models[this.modelName];

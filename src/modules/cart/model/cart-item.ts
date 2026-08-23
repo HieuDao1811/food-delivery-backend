@@ -7,3 +7,5 @@ export const CartItemSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date()
 })
+
+export type CartItem = z.infer<typeof CartItemSchema>;

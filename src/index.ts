@@ -27,7 +27,7 @@ config();
 
     app.use('/v1', setupFoodHexagon(sequelize));
     app.use('/v1', setupCategoryHexagon(sequelize, sctx));
-    app.use('/v1', setupUserHexagon(sequelize));
+    app.use('/v1', setupUserHexagon(sequelize, sctx));
     
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);

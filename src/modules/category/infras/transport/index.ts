@@ -74,6 +74,7 @@ export class CategoryHttpService {
   }
 
   async deleteAPI(req: Request, res: Response) {
+    console.log("id:", req.params.id);
     try {
       await this.deleteCmdHandler.execute({ id: req.params.id as string });
       res.status(204).send();

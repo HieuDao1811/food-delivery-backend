@@ -10,14 +10,16 @@ import { UpdateUserCmdHandler } from "../../usecase/update-user";
 import { DeleteUserCmdHandler } from "../../usecase/delete-user";
 import { LoginCommandHandler } from "../../usecase/login";
 import { ProfileUserQueryHandler } from "../../usecase/profile";
-import { jwtProvider } from "../../../../shared/component/jwt";
 import { VerifyTokenQueryHandler } from "../../usecase/verify-token";
+import { Requester } from "../../../../shared/interface";
+import { UpdateAccountCmdHandler } from "../../usecase/update-account";
 
 export class UserHttpService {
   constructor(
     private readonly registerCommandHandler: RegisterUserCmdHandler,
     private readonly loginCommandHandler: LoginCommandHandler,
     private readonly profileQueryHandler: ProfileUserQueryHandler,
+    private readonly updateAccountCmdHandler: UpdateAccountCmdHandler,
     private readonly getDetailQueryHandler: GetUserDetailQueryHandler,
     private readonly listQueryHandler: ListUserQueryHandler,
     private readonly createCommandHandler: CreateNewUserCmdHandler,
@@ -48,25 +50,24 @@ export class UserHttpService {
 
   async profileAPI(req: Request, res: Response) {
     try {
-      const token = req.headers.authorization?.split(' ')[1];
-      if (!token) {
-        res.status(401).json({ error: 'Unauthorized' });
-        return;
-      }
+      const requester = res.locals.requester as Requester;
 
-      const payload = await jwtProvider.verifyToken(token);
-      if (!payload) {
-        res.status(401).json({ error: 'Unauthorized' });
-        return;
-      }
-
-      const { sub } = payload;
-
-      const user = await this.profileQueryHandler.query({ id: sub });
+      const user = await this.profileQueryHandler.query({ id: requester.sub });
 
       const { password, status, role, salt, ... otherProps  } = user;
 
       res.status(200).json({ data: otherProps });
+    } catch (error) {
+      res.status(400).json({ mesage: (error as Error).message });
+    }
+  }
+
+  async accountAPI(req: Request, res: Response) {
+    try {
+      const requester = res.locals.requester as Requester;
+
+      const user = await this.updateAccountCmdHandler.execute({ id: requester.sub, cmd: req.body });
+      res.status(200).json({ data: user });
     } catch (error) {
       res.status(400).json({ mesage: (error as Error).message });
     }
@@ -77,8 +78,10 @@ export class UserHttpService {
       const id = req.params.id as string;
 
       const result = await this.getDetailQueryHandler.query({ id });
-      
-      res.status(200).json({ data: result });
+
+      const { role, salt, password, ...otherProps } = result;
+
+      res.status(200).json({ data: otherProps });
     } catch (error) {
       res.status(400).json({ message: (error as Error).message });
     }

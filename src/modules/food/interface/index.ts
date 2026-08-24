@@ -30,5 +30,9 @@ export interface ListByIdQuery {
   id: string
 }
 
+export interface ListByIdsQuery {
+  ids: string[]
+}
+
 
 export interface IFoodRepository extends BaseRepositorySequlize<Food, FoodCondDTO, UpdateFoodDTO> {}

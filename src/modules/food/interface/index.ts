@@ -26,7 +26,7 @@ export interface DeleteCommand {
   id: string
 }
 
-export interface ListByIdQuery {
+export interface GetByIdQuery {
   id: string
 }
 

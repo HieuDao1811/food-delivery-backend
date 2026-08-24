@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ICommandHandler, IQueryHandler } from '../../../../shared/interface';
 import { PagingSchema } from '../../../../shared/model/paging';
-import { CreateCommand, DeleteCommand, GetDetailQuery, ListQuery, UpdateCommand } from '../../interface';
+import { CreateCommand, DeleteCommand, GetByIdQuery, GetDetailQuery, ListByIdsQuery, ListQuery, UpdateCommand } from '../../interface';
 import { FoodCondDTOSchema } from '../../model/dto';
 import { FoodError, foodErrors } from '../../model/error';
 import { Food } from '../../model/model';
@@ -32,7 +32,9 @@ export class FoodHttpService {
     private readonly getFoodDetailQueryHandler: IQueryHandler<GetDetailQuery, Food>,
     private readonly listFoodQueryHandler: IQueryHandler<ListQuery, Array<Food>>,
     private readonly updateFoodCmdHandler: ICommandHandler<UpdateCommand, boolean>,
-    private readonly deleteFoodCmdHandler: ICommandHandler<DeleteCommand, boolean>
+    private readonly deleteFoodCmdHandler: ICommandHandler<DeleteCommand, boolean>,
+    private readonly getFoodByIdQueryHandler: IQueryHandler<GetByIdQuery, Food>,
+    private readonly listFoodByIdsQueryHandler: IQueryHandler<ListByIdsQuery, Array<Food>>,
   ) {}
 
   async createAPI(req: Request, res: Response) {
@@ -96,7 +98,22 @@ export class FoodHttpService {
     }
   }
 
-  async listFoodById(req: Request, res: Response) {
-    
+  async getFoodByIdAPI(req: Request, res: Response) {
+    try {
+      const id = req.params.id as string;
+      const result = await this.getFoodByIdQueryHandler.query({ id });
+      res.status(200).json({ data: result});
+    } catch (error) {
+      sendError(res, error);
+    }
+  } 
+
+  async listFoodByIdsAPI(req: Request, res: Response) {
+    try {
+      const collection = await this.listFoodByIdsQueryHandler.query({ ids: req.body.ids });
+      res.status(200).json({ data: collection });
+    } catch (error) {
+      sendError(res, error);
+    }
   }
 }

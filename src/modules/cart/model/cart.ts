@@ -1,4 +1,5 @@
 import z from "zod";
+import { CartFood, CartItem } from "./cart-item";
 
 export const CartSchema = z.object({
   id: z.string(),
@@ -16,11 +17,10 @@ export const CartUserSchema = z.object({
 
 export type CartUser = z.infer<typeof CartUserSchema>;
 
-export const CartFoodSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  price: z.coerce.number().positive(),
-  imageUrl: z.string().nullable().optional()
-});
+export type CartItemDetail = CartItem & {
+  food: CartFood | null;
+};
 
-export type CartFood = z.infer<typeof CartFoodSchema>;
+export type CartDetail = Cart & {
+  items: CartItemDetail[];
+};

@@ -5,12 +5,13 @@ import { Router } from "express";
 import { CartRepository } from "./infras/repository/sequelize/cart-persistence";
 import { CartItemRepository } from "./infras/repository/sequelize/cart-item-persistence";
 import { AddFoodToCartCmdHandler } from "./usecase/add-food-to-cart";
-import { FoodRepository } from "../food/infras/repository/sequelize";
 import { modelName as cartModelName } from "./infras/repository/sequelize/cart-persistence/cart.persistence";
 import { CartHttpService } from "./infras/transport";
 import { ServiceContext } from "../../shared/interface/service-context";
-import { CartFoodRepository } from "./infras/repository/rpc";
+import { CartFoodRPCRepository } from "./infras/repository/rpc";
 import { config } from "../../shared/component/config";
+import { RemoveItemCmdHandler } from "./usecase/remove-item";
+import { GetMyCartQueryHandler } from "./usecase/get-my-cart";
 
 export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => {
   initCart(sequelize);
@@ -18,7 +19,7 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
 
   const cartRepository = new CartRepository(sequelize, cartModelName);
   const cartItemRepository = new CartItemRepository(sequelize, cartItemModelName);
-  const foodRepository = new CartFoodRepository(config.productServiceUrl);
+  const foodRepository = new CartFoodRPCRepository(config.productServiceUrl);
 
   const addFoodToCartCmdHandler = new AddFoodToCartCmdHandler(
     cartItemRepository,
@@ -27,15 +28,25 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
     cartRepository,
     foodRepository
   );
+  const removeItemCmdHandler = new RemoveItemCmdHandler(cartItemRepository);
+  const getMyCartQueryHandler = new GetMyCartQueryHandler(
+    cartRepository,
+    cartItemRepository,
+    foodRepository
+  );
 
   const httpService = new CartHttpService(
-    addFoodToCartCmdHandler
+    addFoodToCartCmdHandler,
+    removeItemCmdHandler,
+    getMyCartQueryHandler
   )
 
   const router = Router();
   const mdlFactory = sctx.mdlFactory;
   
   router.post('/carts', mdlFactory.auth, httpService.addFoodToCartAPI.bind(httpService));
+  router.delete('/carts/:cartId/items/:foodId', mdlFactory.auth, httpService.removeItemAPI.bind(httpService));
+  router.get('/carts/me', mdlFactory.auth, httpService.getMyCartAPI.bind(httpService));
 
   return router;
 };

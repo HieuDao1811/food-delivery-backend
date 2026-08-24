@@ -1,10 +1,19 @@
-import { Cart, CartFood } from "../model/cart";
-import { CartItem } from "../model/cart-item";
+import { Cart } from "../model/cart";
+import { CartFood, CartItem } from "../model/cart-item";
 import { AddCartItemDTO, CartItemCondDTO } from "../model/dto";
 
 export interface AddFoodToCartCommand {
   userId: string;
   cmd: AddCartItemDTO;
+}
+
+export interface RemoveItemCommand {
+  cartId: string;
+  foodId: string;
+}
+
+export interface GetMyCartQuery {
+  userId: string;
 }
 
 export interface ICartQueryRepository {
@@ -18,6 +27,7 @@ export interface ICartCommandRepository {
 export interface ICartItemCommandRepository {
   insert(item: CartItem): Promise<boolean>;
   updateQuantity(cartId: string, foodId: string, quantity: number): Promise<boolean>;
+  removeItemFromCart(cartId: string, foodId: string): Promise<boolean>;
 }
 
 export interface ICartItemQueryRepository {

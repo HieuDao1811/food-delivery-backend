@@ -1,30 +1,25 @@
 import axios from "axios";
 import { IFoodRepository } from "../../../interface";
-import { CartFood } from "../../../model/cart";
+import z from "zod";
+import { CartFood, CartFoodSchema } from "../../../model/cart-item";
 
-export class CartFoodRepository implements IFoodRepository {
+export class CartFoodRPCRepository implements IFoodRepository {
   constructor(private readonly productServiceUrl: string) {}
 
   async findById(id: string): Promise<CartFood | null> {
-    const { data } = await axios.get(`${this.productServiceUrl}${id}`);
-    const food = data.data;
+    try { 
+      const { data } = await axios.get(`${this.productServiceUrl}/${id}`);
+      const food = CartFoodSchema.parse(data.data);
 
-    return {
-      id: food.id,
-      name: food.name,
-      price: food.price,
-      imageUrl: food.image
+      return food;
+    } catch (error) {
+      return null;
     }
   }
   async findByIds(ids: string[]): Promise<CartFood[]> {
-    const { data } = await axios.post(`${this.productServiceUrl}/list`, { ids });
-    const collection = data.data;
+    const { data } = await axios.post(`${this.productServiceUrl}/by-ids`, { ids });
+    const collection = z.array(CartFoodSchema).parse(data.data);
 
-    return collection.map((food: any) => ({
-      id: food.id,
-      name: food.name,
-      price: food.price,
-      imageUrl: food.image
-    }))
+    return collection;
   }
 }

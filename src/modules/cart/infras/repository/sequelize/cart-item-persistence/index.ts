@@ -18,6 +18,11 @@ export class CartItemRepository implements ICartItemRepository {
     return model;
   }
 
+  async removeItemFromCart(cartId: string, foodId: string): Promise<boolean> {
+    const deleted = await this.model.destroy({where: { cartId, foodId }});
+    return deleted > 0;
+  }
+
   async insert(item: CartItem): Promise<boolean> {
     await this.model.create(item);
     return true;

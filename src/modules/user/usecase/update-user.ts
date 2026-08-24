@@ -2,7 +2,7 @@ import { ICommandHandler } from "../../../shared/interface";
 import { IUserRepository, UpdateUserCommand } from "../interface";
 import { UpdateUserSchema } from "../model/dto";
 import { ErrorInvalidUpdateData, ErrorUserNotFound } from "../model/error";
-import { UserStatus } from "../model/model";
+import { UserStatus } from "../model/user";
 
 export class UpdateUserCmdHandler implements ICommandHandler<UpdateUserCommand, boolean> {
   constructor(private readonly repository: IUserRepository) {}

@@ -5,7 +5,7 @@ import { UserRepository } from "../infras/repository/sequelize";
 import { RegisterUserCommand } from "../interface";
 import { RegisterUserSchema } from "../model/dto";
 import { ErrorInvalidRegistrationData, ErrorUserIsExisted } from "../model/error";
-import { Gender, UserStatus } from "../model/model";
+import { Gender, UserStatus } from "../model/user";
 
 export class RegisterUserCmdHandler implements ICommandHandler<RegisterUserCommand, string> {
   constructor(private readonly repository: UserRepository) {}

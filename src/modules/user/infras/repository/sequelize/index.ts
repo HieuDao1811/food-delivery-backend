@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import { BaseRepositorySequlize } from "../../../../../shared/repository/base-repo-sequelize";
 import { CondUserDTO, UpdateUserDTO } from "../../../model/dto";
-import { User, UserStatus } from "../../../model/model";
+import { User, UserStatus } from "../../../model/user";
 import { modelName } from "./user.persistence";
 import { PagingDTO } from "../../../../../shared/model/paging";
 

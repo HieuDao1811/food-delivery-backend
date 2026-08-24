@@ -1,7 +1,7 @@
 import { ICommandHandler } from "../../../shared/interface";
 import { DeleteUserCommand, IUserRepository } from "../interface";
 import { ErrorUserNotFound } from "../model/error";
-import { UserStatus } from "../model/model";
+import { UserStatus } from "../model/user";
 
 export class DeleteUserCmdHandler implements ICommandHandler<DeleteUserCommand, boolean> {
   constructor(private readonly repository: IUserRepository) {}

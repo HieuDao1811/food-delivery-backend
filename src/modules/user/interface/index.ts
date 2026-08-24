@@ -1,7 +1,7 @@
 import { PagingDTO } from "../../../shared/model/paging";
 import { BaseRepositorySequlize } from "../../../shared/repository/base-repo-sequelize";
 import { CondUserDTO, CreateUserDTO, LoginUserDTO, RegisterUserDTO, UpdateAccountDTO, UpdateUserDTO } from "../model/dto";
-import { User } from "../model/model";
+import { User } from "../model/user";
 
 export interface RegisterUserCommand {
   cmd: RegisterUserDTO

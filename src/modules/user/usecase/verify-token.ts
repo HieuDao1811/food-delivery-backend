@@ -2,7 +2,7 @@ import { jwtProvider } from "../../../shared/component/jwt";
 import { IQueryHandler, TokenPayload } from "../../../shared/interface";
 import { IUserRepository, VerifyTokenQuery } from "../interface";
 import { ErrorInvalidToken, ErrorUserInactivated, ErrorUserNotFound } from "../model/error";
-import { UserStatus } from "../model/model";
+import { UserStatus } from "../model/user";
 
 export class VerifyTokenQueryHandler implements IQueryHandler<VerifyTokenQuery, TokenPayload> {
   constructor(private readonly repository: IUserRepository) {}

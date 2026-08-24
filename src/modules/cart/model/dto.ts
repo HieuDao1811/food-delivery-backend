@@ -1,11 +1,11 @@
 import z from "zod";
 
-export const addCartItemDTOSchema = z.object({
+export const AddCartItemDTOSchema = z.object({
   foodId: z.string(),
-  quantity: z.coerce.number().int().positive()
+  quantity: z.coerce.number().int().positive().default(1)
 })
 
-export type addCartItemDTO = z.infer<typeof addCartItemDTOSchema>;
+export type AddCartItemDTO = z.infer<typeof AddCartItemDTOSchema>;
 
 export const CartItemCondDTOSchema = z.object({
   cartId: z.uuid(),
@@ -13,11 +13,3 @@ export const CartItemCondDTOSchema = z.object({
 })
 
 export type CartItemCondDTO = z.infer<typeof CartItemCondDTOSchema>;
-
-export const InsertCartItemDTOSchema = z.object({
-  cartId: z.string(),
-  foodId: z.string(),
-  quantity: z.number()
-})
-
-export type InsertCartItemDTO = z.infer<typeof InsertCartItemDTOSchema>;

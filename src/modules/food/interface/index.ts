@@ -26,5 +26,9 @@ export interface DeleteCommand {
   id: string
 }
 
+export interface ListByIdQuery {
+  id: string
+}
+
 
 export interface IFoodRepository extends BaseRepositorySequlize<Food, FoodCondDTO, UpdateFoodDTO> {}

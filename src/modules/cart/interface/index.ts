@@ -25,7 +25,11 @@ export interface ICartItemQueryRepository {
   listByCartId(cartId: string): Promise<CartItem[]>;
 }
 
-export interface IFoodQueryRepository {
+export interface IFoodRepository {
   findById(id: string): Promise<CartFood | null>;
   findByIds(ids: string[]): Promise<CartFood[]>;
 }
+
+export interface ICartItemRepository extends ICartItemQueryRepository, ICartItemCommandRepository {}
+
+export interface ICartRepository extends ICartQueryRepository, ICartCommandRepository {}

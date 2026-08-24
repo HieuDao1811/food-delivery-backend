@@ -1,6 +1,6 @@
 import { v7 } from "uuid";
 import { ICommandHandler } from "../../../shared/interface";
-import { AddFoodToCartCommand, ICartCommandRepository, ICartItemCommandRepository, ICartItemQueryRepository, ICartQueryRepository, IFoodQueryRepository } from "../interface";
+import { AddFoodToCartCommand, ICartCommandRepository, ICartItemCommandRepository, ICartItemQueryRepository, ICartQueryRepository, IFoodRepository } from "../interface";
 import { AddCartItemDTOSchema } from "../model/dto";
 import { ErrorFoodNotFound, ErrorInvalidAddCartItem } from "../model/error";
 
@@ -10,7 +10,7 @@ export class AddFoodToCartCmdHandler implements ICommandHandler<AddFoodToCartCom
     private readonly cartItemCommandRepo: ICartItemCommandRepository,
     private readonly cartQueryRepo: ICartQueryRepository,
     private readonly cartCommandRepo: ICartCommandRepository,
-    private readonly foodQueryRepo: IFoodQueryRepository
+    private readonly foodQueryRepo: IFoodRepository
   ) {}
 
   async execute(command: AddFoodToCartCommand): Promise<boolean> {

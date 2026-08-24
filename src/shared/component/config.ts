@@ -21,5 +21,6 @@ export const config = {
   accessToken: {
     secretKey: process.env.JWT_SECRET_KEY || "hieudao1811",
     expiresIn: "7d"
-  }
-}
+  },
+  productServiceUrl: process.env.PRODUCT_SERVICE_URL || "http://localhost:3000/v1/foods/"
+};

@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { setupMiddleWares } from './shared/middleware';
 import { TokenIntrospectRPCClient } from './shared/repository/verify-token.rpc';
 import { responseErr } from './shared/app-error';
+import { setupCartHexagon } from './modules/cart';
 
 config();
 
@@ -29,6 +30,7 @@ config();
     app.use('/v1', setupFoodHexagon(sequelize, sctx));
     app.use('/v1', setupCategoryHexagon(sequelize, sctx));
     app.use('/v1', setupUserHexagon(sequelize, sctx));
+    app.use('/v1', setupCartHexagon(sequelize, sctx));
   
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       responseErr(err, res);

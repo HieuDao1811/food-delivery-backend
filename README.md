@@ -23,6 +23,7 @@ DB_PORT=3306
 DB_USERNAME=root
 DB_PASSWORD=your_password
 DB_NAME=food_delivery
+PRODUCT_SERVICE_URL=http://localhost:3000/v1/foods/
 ```
 
 Không commit `.env` vì file này chứa thông tin kết nối database.

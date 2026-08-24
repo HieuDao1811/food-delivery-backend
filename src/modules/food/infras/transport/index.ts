@@ -95,4 +95,8 @@ export class FoodHttpService {
       sendError(res, error);
     }
   }
+
+  async listFoodById(req: Request, res: Response) {
+    
+  }
 }

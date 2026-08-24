@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize";
-import { BaseRepositorySequlize } from "../../../../shared/repository/base-repo-sequelize";
-import { CondCategoryDTO, UpdateCategoryDTO } from "../../model/dto";
-import { Category } from "../../model/model";
-import { modelName } from "./sequelize/category.persistence";
-import { PagingDTO } from "../../../../shared/model/paging";
+import { PagingDTO } from "../../../../../shared/model/paging";
+import { modelName } from "./category.persistence";
+import { Category } from "../../../model/model";
+import { BaseRepositorySequlize } from "../../../../../shared/repository/base-repo-sequelize";
+import { CondCategoryDTO, UpdateCategoryDTO } from "../../../model/dto";
 
 
 export class CategoryRepository extends BaseRepositorySequlize<Category, CondCategoryDTO, UpdateCategoryDTO> {

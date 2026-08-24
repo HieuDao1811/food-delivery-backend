@@ -1,8 +1,7 @@
 import { Op, Sequelize } from "sequelize";
 import { PagingDTO } from "../../../../../shared/model/paging";
 import { FoodCondDTO, UpdateFoodDTO } from "../../../model/dto";
-import { Food, FoodSchema } from "../../../model/model";
-import { IRepository } from "../../../../../shared/interface";
+import { Food } from "../../../model/model";
 import { BaseRepositorySequlize } from "../../../../../shared/repository/base-repo-sequelize";
 import { modelName } from "./food.persistence";
 

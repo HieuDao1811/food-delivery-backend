@@ -1,4 +1,3 @@
-import { ICommandHandler } from "../../../shared/interface";
 import { PagingDTO } from "../../../shared/model/paging";
 import { BaseRepositorySequlize } from "../../../shared/repository/base-repo-sequelize";
 import { CreateFoodDTO, FoodCondDTO, UpdateFoodDTO } from "../model/dto";
@@ -26,13 +25,12 @@ export interface DeleteCommand {
   id: string
 }
 
-export interface ListByIdQuery {
+export interface GetByIdQuery {
   id: string
 }
 
 export interface ListByIdsQuery {
   ids: string[]
 }
-
 
 export interface IFoodRepository extends BaseRepositorySequlize<Food, FoodCondDTO, UpdateFoodDTO> {}

@@ -9,3 +9,12 @@ export const CartItemSchema = z.object({
 })
 
 export type CartItem = z.infer<typeof CartItemSchema>;
+
+export const CartFoodSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  price: z.coerce.number().positive(),
+  imageUrl: z.string().nullable().optional()
+});
+
+export type CartFood = z.infer<typeof CartFoodSchema>;

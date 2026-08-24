@@ -11,6 +11,8 @@ import { DeleteFoodCmdHandler } from './usecase/delete-food';
 import { ListFoodQueryHandler } from './usecase/list-food';
 import { ServiceContext } from '../../shared/interface/service-context';
 import { Role } from '../../shared/interface';
+import { GetFoodByIdQueryHandler } from './usecase/get-food-by-id';
+import { ListFoodByIdsQueryHandler } from './usecase/list-food-by-ids';
 
 export const setupFoodHexagon = (sequelize: Sequelize, sctx: ServiceContext) => {
   init(sequelize);
@@ -22,13 +24,17 @@ export const setupFoodHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
   const listQueryHandler = new ListFoodQueryHandler(repository);
   const updateCmdHandler = new UpdateFoodCmdHandler(repository);
   const deleteCmdHandler = new DeleteFoodCmdHandler(repository);
+  const getByIdQueryHandler = new GetFoodByIdQueryHandler(repository);
+  const listByIdsQueryHandler = new ListFoodByIdsQueryHandler(repository);
 
   const httpService = new FoodHttpService(
     createCmdHandler, 
     getDetailQueryHandler, 
     listQueryHandler,
     updateCmdHandler,
-    deleteCmdHandler
+    deleteCmdHandler,
+    getByIdQueryHandler,
+    listByIdsQueryHandler
   );
 
   const router = Router();
@@ -40,6 +46,10 @@ export const setupFoodHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
   router.post('/foods', mdlFactory.auth, checkAdmin, httpService.createAPI.bind(httpService));
   router.patch('/foods/:id', mdlFactory.auth, checkAdmin, httpService.updateAPI.bind(httpService));
   router.delete('/foods/:id', mdlFactory.auth, checkAdmin, httpService.deleteAPI.bind(httpService));
+
+  //rpc
+  router.get('/rpc/foods/:id', httpService.getFoodByIdAPI.bind(httpService));
+  router.post('/rpc/foods/by-ids', httpService.listFoodByIdsAPI.bind(httpService));
 
   return router;
 }

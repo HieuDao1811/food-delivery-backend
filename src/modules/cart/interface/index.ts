@@ -8,6 +8,7 @@ export interface AddFoodToCartCommand {
 }
 
 export interface RemoveItemCommand {
+  userId: string;
   cartId: string;
   foodId: string;
 }

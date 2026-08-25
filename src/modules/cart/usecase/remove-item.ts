@@ -1,11 +1,17 @@
 import { ICommandHandler } from "../../../shared/interface";
-import { ICartItemCommandRepository, RemoveItemCommand } from "../interface";
+import { ICartItemCommandRepository, ICartRepository, RemoveItemCommand } from "../interface";
+import { ErrorCartNotFound } from "../model/error";
 
 export class RemoveItemCmdHandler implements ICommandHandler<RemoveItemCommand, boolean> {
-  constructor(private readonly repository: ICartItemCommandRepository) {}
+  constructor(
+    private readonly cartRepository: ICartRepository,
+    private readonly cartItemRepository: ICartItemCommandRepository) {}
 
   async execute(command: RemoveItemCommand): Promise<boolean> {
-    await this.repository.removeItemFromCart(command.cartId, command.foodId);
-    return true;
+    const cart = await this.cartRepository.findByUserId(command.userId);
+    if (!cart || cart.id !== command.cartId) {
+      throw ErrorCartNotFound;
+    }
+    return await this.cartItemRepository.removeItemFromCart(command.cartId, command.foodId);;
   }
 }

@@ -28,7 +28,7 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
     cartRepository,
     foodRepository
   );
-  const removeItemCmdHandler = new RemoveItemCmdHandler(cartItemRepository);
+  const removeItemCmdHandler = new RemoveItemCmdHandler(cartRepository, cartItemRepository);
   const getMyCartQueryHandler = new GetMyCartQueryHandler(
     cartRepository,
     cartItemRepository,

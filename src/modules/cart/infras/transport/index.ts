@@ -27,11 +27,19 @@ export class CartHttpService {
 
   async removeItemAPI(req: Request, res: Response) {
     try {
+      const requester = res.locals.requester as Requester;
+      const { sub } = requester;
       const cartId = req.params.cartId as string;
       const foodId = req.params.foodId as string;
 
-      const result = await this.removeItemHandler.execute({ cartId, foodId });
-      res.status(200).json({ data: result });
+      const result = await this.removeItemHandler.execute({ userId: sub, cartId, foodId });
+      
+      if (!result) {
+        res.status(404).json({
+        error: "Cart item not found"
+      });
+      return;
+      }
     } catch (error) {
       responseErr(error as Error, res);
     }

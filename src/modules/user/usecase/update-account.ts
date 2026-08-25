@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import { ICommandHandler } from "../../../shared/interface";
 import { IUserRepository, UpdateAccountCmd } from "../interface";
 import { UpdateAccountSchema } from "../model/dto";
@@ -7,7 +9,7 @@ export class UpdateAccountCmdHandler implements ICommandHandler<UpdateAccountCmd
   constructor(private readonly repository: IUserRepository) {}
 
   async execute(command: UpdateAccountCmd): Promise<boolean> {
-    const { success, data, error } = UpdateAccountSchema.safeParse(command.cmd);
+    const { success, data } = UpdateAccountSchema.safeParse(command.cmd);
     if (!success) {
       throw ErrorInvalidUpdateData;
     }
@@ -17,7 +19,13 @@ export class UpdateAccountCmdHandler implements ICommandHandler<UpdateAccountCmd
       throw ErrorUserNotFound;
     }
 
-    await this.repository.update(command.id, data);
+    const updateData = { ...data };
+
+    if (data.password) {
+      updateData.password = bcrypt.hashSync(data.password, 10);
+    }
+
+    await this.repository.update(command.id, updateData);
     return true;
   }
 }

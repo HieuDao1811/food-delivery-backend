@@ -27,7 +27,6 @@ export const UserSchema = z.object({
   gender: z.enum(Gender).default(Gender.UNKNOWN),
   email: z.string().email(ErrEmailInvalid.message),
   password: z.string().min(6, ErrPasswordAtLeast6Chars.message),
-  salt: z.string(),
   role: z.enum(Role).default(Role.CUSTOMER),
   status: z.enum(UserStatus).default(UserStatus.ACTIVE),
   createdAt: z.date(),

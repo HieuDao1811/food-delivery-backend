@@ -43,7 +43,7 @@ export class UserHttpService {
   async profileAPI(req: Request, res: Response) {
     const requester = res.locals.requester as Requester;
     const user = await this.profileQueryHandler.query({ id: requester.sub });
-    const { password, status, role, salt, ... otherProps  } = user;
+    const { password, status, role, ... otherProps  } = user;
     res.status(200).json({ data: otherProps });
   }
 
@@ -56,7 +56,7 @@ export class UserHttpService {
   async getDetailAPI(req: Request, res: Response) {
     const id = req.params.id as string;
     const result = await this.getDetailQueryHandler.query({ id });
-    const { role, salt, password, ...otherProps } = result;
+    const { role, password, ...otherProps } = result;
     res.status(200).json({ data: otherProps });
   }
 

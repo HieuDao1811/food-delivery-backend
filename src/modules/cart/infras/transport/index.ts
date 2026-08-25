@@ -1,14 +1,20 @@
 import { Request, Response } from "express";
 import { responseErr } from "../../../../shared/app-error";
 import {  ICommandHandler, IQueryHandler, Requester } from "../../../../shared/interface";
-import { AddFoodToCartCommand, GetMyCartQuery, RemoveItemCommand } from "../../interface";
+import {
+  AddFoodToCartCommand,
+  GetMyCartQuery,
+  RemoveItemCommand,
+  UpdateCartItemQuantityCommand
+} from "../../interface";
 import { CartDetail } from "../../model/cart";
 
 export class CartHttpService {
   constructor(
     private readonly addFoodToCartHandler: ICommandHandler<AddFoodToCartCommand, boolean>,
     private readonly removeItemHandler: ICommandHandler<RemoveItemCommand, boolean>,
-    private readonly getMyCartHandler: IQueryHandler<GetMyCartQuery, CartDetail | null>
+    private readonly getMyCartHandler: IQueryHandler<GetMyCartQuery, CartDetail | null>,
+    private readonly updateCartItemQuantityHandler: ICommandHandler<UpdateCartItemQuantityCommand, boolean>
   ) {}
 
   async addFoodToCartAPI(req: Request, res: Response) {
@@ -35,11 +41,28 @@ export class CartHttpService {
       const result = await this.removeItemHandler.execute({ userId: sub, cartId, foodId });
       
       if (!result) {
-        res.status(404).json({
-        error: "Cart item not found"
-      });
-      return;
+        res.status(404).json({ error: "Cart item not found" });
+        return;
       }
+
+      res.status(200).json({ data: true });
+    } catch (error) {
+      responseErr(error as Error, res);
+    }
+  }
+
+  async updateQuantityAPI(req: Request, res: Response) {
+    try {
+      const requester = res.locals.requester as Requester;
+
+      await this.updateCartItemQuantityHandler.execute({
+        userId: requester.sub,
+        cartId: req.params.cartId as string,
+        foodId: req.params.foodId as string,
+        cmd: req.body
+      });
+
+      res.status(200).json({ data: true });
     } catch (error) {
       responseErr(error as Error, res);
     }

@@ -16,6 +16,7 @@ export function init(sequelize: Sequelize) {
       userId: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         field: "user_id",
       },
     },

@@ -1,6 +1,10 @@
 import { Cart } from "../model/cart";
 import { CartFood, CartItem } from "../model/cart-item";
-import { AddCartItemDTO, CartItemCondDTO } from "../model/dto";
+import {
+  AddCartItemDTO,
+  CartItemCondDTO,
+  UpdateCartItemQuantityDTO
+} from "../model/dto";
 
 export interface AddFoodToCartCommand {
   userId: string;
@@ -15,6 +19,13 @@ export interface RemoveItemCommand {
 
 export interface GetMyCartQuery {
   userId: string;
+}
+
+export interface UpdateCartItemQuantityCommand {
+  userId: string;
+  cartId: string;
+  foodId: string;
+  cmd: UpdateCartItemQuantityDTO;
 }
 
 export interface ICartQueryRepository {

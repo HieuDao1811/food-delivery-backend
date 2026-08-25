@@ -2,7 +2,13 @@ import { v7 } from "uuid";
 import { ICommandHandler } from "../../../shared/interface";
 import { AddFoodToCartCommand, ICartCommandRepository, ICartItemCommandRepository, ICartItemQueryRepository, ICartQueryRepository, IFoodRepository } from "../interface";
 import { AddCartItemDTOSchema } from "../model/dto";
-import { ErrorFoodNotFound, ErrorInvalidAddCartItem } from "../model/error";
+import {
+  ErrorCartItemQuantityExceeded,
+  ErrorCreateCartFailed,
+  ErrorFoodNotFound,
+  ErrorInvalidAddCartItem,
+  ErrorCartItemNotFound
+} from "../model/error";
 
 export class AddFoodToCartCmdHandler implements ICommandHandler<AddFoodToCartCommand, boolean> {
   constructor(
@@ -21,7 +27,7 @@ export class AddFoodToCartCmdHandler implements ICommandHandler<AddFoodToCartCom
     const { foodId, quantity } = data;
 
     const food = await this.foodQueryRepo.findById(foodId);
-    if (!food) {
+    if (!food || food.isAvailable === 0) {
       throw ErrorFoodNotFound;
     }
 
@@ -33,20 +39,32 @@ export class AddFoodToCartCmdHandler implements ICommandHandler<AddFoodToCartCom
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      await this.cartCommandRepo.insert(cart);
+      const created = await this.cartCommandRepo.insert(cart);
+      if (!created) {
+        throw ErrorCreateCartFailed;
+      }
     }
 
-    const item = await this.cartItemQueryRepo.findByCond({
-      cartId: cart.id,
-      foodId
-    });
+    const item = await this.cartItemQueryRepo.findByCond({ cartId: cart.id, foodId });
 
     if (item) {
-      return this.cartItemCommandRepo.updateQuantity(
+      const newQuantity = item.quantity + quantity;
+
+      if (newQuantity > 99) {
+        throw ErrorCartItemQuantityExceeded;
+      }
+
+      const updated = await this.cartItemCommandRepo.updateQuantity(
         cart.id,
         foodId,
-        item.quantity + quantity
+        newQuantity
       );
+
+      if (!updated) {
+        throw ErrorCartItemNotFound;
+      }
+
+      return true;
     }
 
     return this.cartItemCommandRepo.insert({

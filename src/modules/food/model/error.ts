@@ -33,3 +33,4 @@ export const ErrFoodPricePositive = new Error('Food price must be greater than 0
 export const ErrFoodImageUrlInvalid = new Error('Food image URL is invalid');
 export const ErrFoodAvailabilityInvalid = new Error('Food availability must be 0 or 1');
 export const ErrFoodUpdateAtLeastOneField = new Error('At least one food field is required');
+export const ErrFoodNotFound = new Error('Food not found');

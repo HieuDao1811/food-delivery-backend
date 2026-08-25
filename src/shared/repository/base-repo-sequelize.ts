@@ -6,7 +6,7 @@ export abstract class BaseRepositorySequlize<Entity, Condition, UpdateDTO> imple
   constructor(protected readonly sequelize: Sequelize, protected readonly modelName: string) {}
   
   async listByIds(ids: string[]): Promise<Entity[]> {
-    const rows = await this.model.findAll({ where: {id: { [Op.in]: ids } } });
+    const rows = await this.model.findAll({ where: {id: { [Op.in]: ids }, isAvailable: 1 } });
     const persistenceData = rows.map((row) => {
       return row.get({ plain: true });
     });

@@ -12,6 +12,7 @@ import { CartFoodRPCRepository } from "./infras/repository/rpc";
 import { config } from "../../shared/component/config";
 import { RemoveItemCmdHandler } from "./usecase/remove-item";
 import { GetMyCartQueryHandler } from "./usecase/get-my-cart";
+import { UpdateCartItemQuantityCmdHandler } from "./usecase/update-cart-item-quantity";
 
 export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => {
   initCart(sequelize);
@@ -22,13 +23,18 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
   const foodRepository = new CartFoodRPCRepository(config.productServiceUrl);
 
   const addFoodToCartCmdHandler = new AddFoodToCartCmdHandler(
+    sequelize,
     cartItemRepository,
     cartItemRepository,
     cartRepository,
     cartRepository,
     foodRepository
   );
-  const removeItemCmdHandler = new RemoveItemCmdHandler(cartItemRepository);
+  const removeItemCmdHandler = new RemoveItemCmdHandler(cartRepository, cartItemRepository);
+  const updateCartItemQuantityCmdHandler = new UpdateCartItemQuantityCmdHandler(
+    cartRepository,
+    cartItemRepository
+  );
   const getMyCartQueryHandler = new GetMyCartQueryHandler(
     cartRepository,
     cartItemRepository,
@@ -38,7 +44,8 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
   const httpService = new CartHttpService(
     addFoodToCartCmdHandler,
     removeItemCmdHandler,
-    getMyCartQueryHandler
+    getMyCartQueryHandler,
+    updateCartItemQuantityCmdHandler
   )
 
   const router = Router();
@@ -46,6 +53,7 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
   
   router.post('/carts', mdlFactory.auth, httpService.addFoodToCartAPI.bind(httpService));
   router.delete('/carts/:cartId/items/:foodId', mdlFactory.auth, httpService.removeItemAPI.bind(httpService));
+  router.patch('/carts/:cartId/items/:foodId', mdlFactory.auth, httpService.updateQuantityAPI.bind(httpService));
   router.get('/carts/me', mdlFactory.auth, httpService.getMyCartAPI.bind(httpService));
 
   return router;

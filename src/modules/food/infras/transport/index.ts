@@ -5,6 +5,7 @@ import { CreateCommand, DeleteCommand, GetByIdQuery, GetDetailQuery, ListByIdsQu
 import { FoodCondDTOSchema } from '../../model/dto';
 import { FoodError, foodErrors } from '../../model/error';
 import { Food } from '../../model/model';
+import z from 'zod';
 
 const sendError = (res: Response, error: unknown) => {
   if(error instanceof FoodError) {
@@ -110,7 +111,19 @@ export class FoodHttpService {
 
   async listFoodByIdsAPI(req: Request, res: Response) {
     try {
-      const collection = await this.listFoodByIdsQueryHandler.query({ ids: req.body.ids });
+      const schema = z.object({
+        ids: z.array(z.string()).min(1)
+      });
+
+      const result = schema.safeParse(req.body);
+
+      if (!result.success) {
+        return res.status(400).json({
+          error: "ids must be a non-empty array"
+        });
+      }
+
+      const collection = await this.listFoodByIdsQueryHandler.query({ ids: result.data.ids });
       res.status(200).json({ data: collection });
     } catch (error) {
       sendError(res, error);

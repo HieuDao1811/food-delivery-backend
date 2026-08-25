@@ -25,14 +25,12 @@ export class RegisterUserCmdHandler implements ICommandHandler<RegisterUserComma
 
     const newId = v7();
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(data.password, salt);
+    const hashedPassword = bcrypt.hashSync(data.password, 10);
 
     const user = {
       ...data,
       id: newId,
       password: hashedPassword,
-      salt: salt,
       gender: Gender.UNKNOWN,
       status: UserStatus.ACTIVE,
       role: Role.CUSTOMER,

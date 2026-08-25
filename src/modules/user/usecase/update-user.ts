@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { ICommandHandler } from "../../../shared/interface";
 import { IUserRepository, UpdateUserCommand } from "../interface";
 import { UpdateUserSchema } from "../model/dto";
@@ -20,7 +21,13 @@ export class UpdateUserCmdHandler implements ICommandHandler<UpdateUserCommand, 
       throw ErrorUserNotFound;
     }
 
-    await this.repository.update(command.id, data);
+    const updateData = { ...data };
+
+    if (data.password) {
+      updateData.password = bcrypt.hashSync(data.password, 10);
+    }
+
+    await this.repository.update(command.id, updateData);
     
     return true;
   }

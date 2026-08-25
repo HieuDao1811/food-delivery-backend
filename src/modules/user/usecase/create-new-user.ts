@@ -22,13 +22,11 @@ export class CreateNewUserCmdHandler implements ICommandHandler<CreateUserComman
     }
 
     const newId = v7();
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(data.password, salt);
+    const hash = bcrypt.hashSync(data.password, 10);
 
     const newUser: User = {
       ...data,
       id: newId,
-      salt: salt,
       password: hash,
       createdAt: new Date(),
       updatedAt: new Date()

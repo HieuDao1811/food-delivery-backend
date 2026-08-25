@@ -11,7 +11,7 @@ export function allowRoles(roles: Role[]): Handler {
     const requester = res.locals.requester as Requester;
 
     if (roles.indexOf(requester.role) === -1) {
-      res.status(401).json({ error: "Unauthorized "});
+      res.status(403).json({ error: "Forbidden"});
       return;
     }
     

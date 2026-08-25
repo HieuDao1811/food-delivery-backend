@@ -73,4 +73,4 @@ export const UpdateAccountSchema = z.object({
   password: z.string().min(6, ErrPasswordAtLeast6Chars.message).optional()
 });
 
-export type UpdateAccountDTO = z.infer<typeof UpdateUserSchema>;
+export type UpdateAccountDTO = z.infer<typeof UpdateAccountSchema>;

@@ -7,7 +7,7 @@ export class DeleteUserCmdHandler implements ICommandHandler<DeleteUserCommand, 
   constructor(private readonly repository: IUserRepository) {}
 
   async execute(command: DeleteUserCommand): Promise<boolean> {
-    const user = this.repository.get(command.id);
+    const user = await this.repository.get(command.id);
 
     if (!user) {
       throw ErrorUserNotFound;

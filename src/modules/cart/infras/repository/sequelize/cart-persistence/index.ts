@@ -1,4 +1,5 @@
-import { Model, ModelStatic, Sequelize } from "sequelize";
+import { Model, ModelStatic, Sequelize, Transaction } from "sequelize";
+import { v7 } from "uuid";
 import { ICartRepository } from "../../../../interface";
 import { Cart } from "../../../../model/cart";
 import { modelName } from "./cart.persistence";
@@ -27,8 +28,20 @@ export class CartRepository implements ICartRepository {
 		return cart ? cart.get({ plain: true }) as Cart : null;
 	}
 
-	async insert(cart: Cart): Promise<boolean> {
-		await this.model.create(cart);
+	async findOrCreateByUserId(userId: string, transaction: Transaction): Promise<Cart> {
+		const [cart] = await this.model.findOrCreate({
+			where: { userId },
+			defaults: { id: v7(), userId },
+			transaction
+		});
+
+		return cart.get({ plain: true }) as Cart;
+	}
+
+	async insert(cart: Cart, transaction?: Transaction): Promise<boolean> {
+		await this.model.create(cart, {
+			...(transaction ? { transaction } : {})
+		});
 		return true;
 	}
 }

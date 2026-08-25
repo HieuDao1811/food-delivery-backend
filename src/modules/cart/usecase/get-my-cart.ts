@@ -17,10 +17,6 @@ export class GetMyCartQueryHandler implements IQueryHandler<GetMyCartQuery, Cart
 
     const items = await this.cartItemRepository.listByCartId(cart.id);
 
-    if (items.length === 0) {
-      return null;
-    }
-    
     const foods = await this.foodRepository.findByIds(
       items.map((item) => item.foodId)
     );

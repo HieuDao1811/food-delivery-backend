@@ -1,10 +1,9 @@
-import { v7 } from "uuid";
+import { Sequelize } from "sequelize";
 import { ICommandHandler } from "../../../shared/interface";
 import { AddFoodToCartCommand, ICartCommandRepository, ICartItemCommandRepository, ICartItemQueryRepository, ICartQueryRepository, IFoodRepository } from "../interface";
 import { AddCartItemDTOSchema } from "../model/dto";
 import {
   ErrorCartItemQuantityExceeded,
-  ErrorCreateCartFailed,
   ErrorFoodNotFound,
   ErrorInvalidAddCartItem,
   ErrorCartItemNotFound
@@ -12,6 +11,7 @@ import {
 
 export class AddFoodToCartCmdHandler implements ICommandHandler<AddFoodToCartCommand, boolean> {
   constructor(
+    private readonly sequelize: Sequelize,
     private readonly cartItemQueryRepo: ICartItemQueryRepository,
     private readonly cartItemCommandRepo: ICartItemCommandRepository,
     private readonly cartQueryRepo: ICartQueryRepository,
@@ -31,48 +31,45 @@ export class AddFoodToCartCmdHandler implements ICommandHandler<AddFoodToCartCom
       throw ErrorFoodNotFound;
     }
 
-    let cart = await this.cartQueryRepo.findByUserId(command.userId);
-    if (!cart) {
-      cart = {
-        id: v7(),
-        userId: command.userId,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      const created = await this.cartCommandRepo.insert(cart);
-      if (!created) {
-        throw ErrorCreateCartFailed;
-      }
-    }
-
-    const item = await this.cartItemQueryRepo.findByCond({ cartId: cart.id, foodId });
-
-    if (item) {
-      const newQuantity = item.quantity + quantity;
-
-      if (newQuantity > 99) {
-        throw ErrorCartItemQuantityExceeded;
-      }
-
-      const updated = await this.cartItemCommandRepo.updateQuantity(
-        cart.id,
-        foodId,
-        newQuantity
+    return this.sequelize.transaction(async (transaction) => {
+      const cart = await this.cartQueryRepo.findOrCreateByUserId(
+        command.userId,
+        transaction
       );
 
-      if (!updated) {
-        throw ErrorCartItemNotFound;
+      const item = await this.cartItemQueryRepo.findByCond(
+        { cartId: cart.id, foodId },
+        transaction
+      );
+
+      if (item) {
+        const newQuantity = item.quantity + quantity;
+
+        if (newQuantity > 99) {
+          throw ErrorCartItemQuantityExceeded;
+        }
+
+        const updated = await this.cartItemCommandRepo.updateQuantity(
+          cart.id,
+          foodId,
+          newQuantity,
+          transaction
+        );
+
+        if (!updated) {
+          throw ErrorCartItemNotFound;
+        }
+
+        return true;
       }
 
-      return true;
-    }
-
-    return this.cartItemCommandRepo.insert({
-      cartId: cart.id,
-      foodId,
-      quantity,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      return this.cartItemCommandRepo.insert({
+        cartId: cart.id,
+        foodId,
+        quantity,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }, transaction);
     });
   }
 }

@@ -23,6 +23,7 @@ export const setupCartHexagon = (sequelize: Sequelize, sctx: ServiceContext) => 
   const foodRepository = new CartFoodRPCRepository(config.productServiceUrl);
 
   const addFoodToCartCmdHandler = new AddFoodToCartCmdHandler(
+    sequelize,
     cartItemRepository,
     cartItemRepository,
     cartRepository,

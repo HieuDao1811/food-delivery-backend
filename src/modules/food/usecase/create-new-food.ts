@@ -20,9 +20,11 @@ export class CreateNewFoodCmdHandler implements ICommandHandler<CreateCommand, s
       throw foodErrors.nameDuplicated();
     }
 
+    const { categoryIds, ...foodData } = parsedData;
+
     const newId = v7();
     const food = {
-      ...parsedData,
+      ...foodData,
       id: newId,
       isAvailable: 1,
       createdAt: new Date(),

@@ -22,5 +22,6 @@ export const config = {
     secretKey: process.env.JWT_SECRET_KEY || "hieudao1811",
     expiresIn: "7d"
   },
-  productServiceUrl: process.env.PRODUCT_SERVICE_URL || "http://localhost:3000/v1/foods/"
+  productServiceUrl: process.env.PRODUCT_SERVICE_URL || "http://localhost:3000/v1/rpc/foods",
+  categoryServiceUrl: process.env.CATEGORY_SERVICE_URL || "http://localhost:3000/v1/rpc/categories"
 };

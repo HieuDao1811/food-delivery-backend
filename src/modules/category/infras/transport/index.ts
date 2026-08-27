@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ICommandHandler, IQueryHandler } from "../../../../shared/interface";
 import { PagingSchema } from "../../../../shared/model/paging";
-import { CreateCommand, DeleteCommand, GetDetailQuery, ListQuery, UpdateCommand } from "../../interface";
+import { CreateCommand, DeleteCommand, GetDetailQuery, ICategoryRepository, ListQuery, UpdateCommand } from "../../interface";
 import { CondCategorySchema } from "../../model/dto";
 import { ErrorInvalidCategoryData } from "../../model/error";
 import { Category } from "../../model/model";
@@ -13,7 +13,8 @@ export class CategoryHttpService {
     private readonly getDetailQueryHandler: IQueryHandler<GetDetailQuery, Category>,
     private readonly listQueryHandler: IQueryHandler<ListQuery, Array<Category>>,
     private readonly updateCmdHandler: ICommandHandler<UpdateCommand, boolean>,
-    private readonly deleteCmdHandler: ICommandHandler<DeleteCommand, boolean>
+    private readonly deleteCmdHandler: ICommandHandler<DeleteCommand, boolean>,
+    private readonly repository: ICategoryRepository
   ) {}
 
   async createAPI(req: Request, res: Response) {
@@ -81,6 +82,20 @@ export class CategoryHttpService {
       res.status(204).send();
     } catch (error) {
         responseErr(error as Error, res);
+    }
+  }
+
+  // RPC endpoint — internal use only, no auth required
+  async validateCategoryIdsAPI(req: Request, res: Response) {
+    try {
+      const { ids } = req.body;
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(200).json({ data: { valid: false } });
+      }
+      const valid = await this.repository.validateIds(ids);
+      res.status(200).json({ data: { valid } });
+    } catch (error) {
+      responseErr(error as Error, res);
     }
   }
 }

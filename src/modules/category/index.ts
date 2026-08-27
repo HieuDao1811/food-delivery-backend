@@ -27,7 +27,8 @@ export const setupCategoryHexagon = (sequelize: Sequelize, sctx: ServiceContext)
     getDetailQueryHandler,
     listQueryHandler,
     updateCmdHandler,
-    deleteCmdHandler
+    deleteCmdHandler,
+    repository
   );
 
   const router = Router();
@@ -39,6 +40,9 @@ export const setupCategoryHexagon = (sequelize: Sequelize, sctx: ServiceContext)
   router.get('/categories',  mdlFactory.auth, httpService.listAPI.bind(httpService));
   router.patch('/categories/:id', mdlFactory.auth, adminChecker, httpService.updateAPI.bind(httpService));
   router.delete('/categories/:id', mdlFactory.auth, adminChecker, httpService.deleteAPI.bind(httpService));
+
+  // RPC — internal, no auth
+  router.post('/rpc/categories/validate', httpService.validateCategoryIdsAPI.bind(httpService));
 
   return router;
 }

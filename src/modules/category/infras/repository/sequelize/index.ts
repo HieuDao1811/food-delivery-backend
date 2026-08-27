@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { PagingDTO } from "../../../../../shared/model/paging";
 import { modelName } from "./category.persistence";
 import { Category } from "../../../model/model";
@@ -38,5 +38,11 @@ export class CategoryRepository extends BaseRepositorySequlize<Category, CondCat
   async delete(id: string): Promise<boolean> {
     const affected = await this.model.destroy({ where: { id } });
     return affected > 0;
+  }
+
+  async validateIds(ids: string[]): Promise<boolean> {
+    if (ids.length === 0) return false;
+    const count = await this.model.count({ where: { id: { [Op.in]: ids } } });
+    return count === ids.length;
   }
 }

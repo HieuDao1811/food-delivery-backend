@@ -27,4 +27,5 @@ export interface DeleteCommand {
 
 export interface ICategoryRepository extends BaseRepositorySequlize<Category, CondCategoryDTO, UpdateCategoryDTO> {
   listAll(): Promise<Array<Category>>;
+  validateIds(ids: string[]): Promise<boolean>;
 }
